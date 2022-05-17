@@ -1,0 +1,62 @@
+# modules
+[libraries.other_core_ktx]
+module = "androidx.core:core-ktx"
+[libraries.other_leanback]
+module = "androidx.leanback:leanback"
+[libraries.other_glide]
+module = "com.github.bumptech.glide:glide"
+[libraries.other_timber]
+module = "com.jakewharton.timber:timber"
+[libraries.other_startup]
+module = "androidx.startup:startup-runtime"
+[libraries.other_coil]
+module = "io.coil-kt:coil"
+[libraries.other_annotations]
+module = "com.android.support:support-annotations"
+[libraries.other_lifecycle_viewmodel]
+module = "androidx.lifecycle:lifecycle-viewmodel-ktx"
+[libraries.other_lifecycle_livedata]
+module = "androidx.lifecycle:lifecycle-livedata-ktx"
+[libraries.other_fragment_ktx]
+module = "androidx.fragment:fragment-ktx"
+[libraries.other_serialization]
+module = "org.jetbrains.kotlinx:kotlinx-serialization-json"
+
+# versions
+[libraries.other_core_ktx.version]
+ref = "otherCoreKtxVersion"
+[libraries.other_leanback.version]
+ref = "otherLeanbackVersion"
+[libraries.other_glide.version]
+ref = "otherGlideVersion"
+[libraries.other_timber.version]
+ref = "timberVersion"
+[libraries.other_startup.version]
+ref = "startupVersion"
+[libraries.other_coil.version]
+ref = "coilVersion"
+[libraries.other_annotations.version]
+ref = "annotationsVersion"
+[libraries.other_lifecycle_viewmodel.version]
+ref = "lifecycleVersion"
+[libraries.other_lifecycle_livedata.version]
+ref = "lifecycleVersion"
+[libraries.other_fragment_ktx.version]
+ref = "fragmentKtxVersion"
+[libraries.other_serialization.version]
+ref = "serializationVersion"
+
+[bundles]
+other = [
+    "other_core_ktx",
+    "other_leanback",
+    "other_glide",
+    "other_timber",
+    "other_startup",
+    "other_coil",
+    "other_annotations",
+    "other_lifecycle_viewmodel",
+    "other_lifecycle_livedata",
+    "other_fragment_ktx",
+    "other_serialization",
+]

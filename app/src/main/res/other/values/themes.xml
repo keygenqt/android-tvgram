@@ -1,0 +1,3 @@
+<resources>
+    <style name="Theme.Tvgram" parent="@style/Theme.Leanback" />
+</resources>

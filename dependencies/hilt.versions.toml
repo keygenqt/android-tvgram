@@ -1,0 +1,19 @@
+# modules
+[libraries.hilt_android]
+module = "com.google.dagger:hilt-android"
+[libraries.hilt_compiler]
+module = "com.google.dagger:hilt-android-compiler"
+
+# versions
+[libraries.hilt_android.version]
+ref = "hiltVersion"
+[libraries.hilt_compiler.version]
+ref = "hiltVersion"
+
+[bundles]
+hilt = [
+    "hilt-android",
+]
+hiltKapt = [
+    "hilt-compiler"
+]
