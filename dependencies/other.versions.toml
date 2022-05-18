@@ -13,14 +13,24 @@ module = "androidx.startup:startup-runtime"
 module = "io.coil-kt:coil"
 [libraries.other_annotations]
 module = "com.android.support:support-annotations"
-[libraries.other_lifecycle_viewmodel]
-module = "androidx.lifecycle:lifecycle-viewmodel-ktx"
-[libraries.other_lifecycle_livedata]
-module = "androidx.lifecycle:lifecycle-livedata-ktx"
 [libraries.other_fragment_ktx]
 module = "androidx.fragment:fragment-ktx"
 [libraries.other_serialization]
 module = "org.jetbrains.kotlinx:kotlinx-serialization-json"
+[libraries.other_lottie]
+module = "com.airbnb.android:lottie"
+[libraries.other_appcompat]
+module = "androidx.appcompat:appcompat"
+[libraries.other_appcompat_resources]
+module = "androidx.appcompat:appcompat-resources"
+[libraries.other_constraintlayout]
+module = "androidx.constraintlayout:constraintlayout"
+[libraries.other_lifecycle_viewmodel]
+module = "androidx.lifecycle:lifecycle-viewmodel"
+[libraries.other_lifecycle_viewmodel_ktx]
+module = "androidx.lifecycle:lifecycle-viewmodel-ktx"
+[libraries.other_material]
+module = "com.google.android.material:material"
 
 # versions
 [libraries.other_core_ktx.version]
@@ -37,14 +47,24 @@ ref = "startupVersion"
 ref = "coilVersion"
 [libraries.other_annotations.version]
 ref = "annotationsVersion"
-[libraries.other_lifecycle_viewmodel.version]
-ref = "lifecycleVersion"
-[libraries.other_lifecycle_livedata.version]
-ref = "lifecycleVersion"
 [libraries.other_fragment_ktx.version]
 ref = "fragmentKtxVersion"
 [libraries.other_serialization.version]
 ref = "serializationVersion"
+[libraries.other_lottie.version]
+ref = "lottieVersion"
+[libraries.other_appcompat.version]
+ref = "appcompatVersion"
+[libraries.other_appcompat_resources.version]
+ref = "appcompatVersion"
+[libraries.other_constraintlayout.version]
+ref = "constraintlayoutVersion"
+[libraries.other_lifecycle_viewmodel.version]
+ref = "lifecycleVersion"
+[libraries.other_lifecycle_viewmodel_ktx.version]
+ref = "lifecycleVersion"
+[libraries.other_material.version]
+ref = "materialVersion"
 
 [bundles]
 other = [
@@ -55,8 +75,13 @@ other = [
     "other_startup",
     "other_coil",
     "other_annotations",
-    "other_lifecycle_viewmodel",
-    "other_lifecycle_livedata",
     "other_fragment_ktx",
     "other_serialization",
+    "other_lottie",
+    "other_constraintlayout",
+    "other_appcompat",
+    "other_appcompat_resources",
+    "other_lifecycle_viewmodel",
+    "other_lifecycle_viewmodel_ktx",
+    "other_material",
 ]

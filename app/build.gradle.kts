@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.keygenqt.tvgram"
-        minSdk = 23
+        minSdk = 26
         targetSdk = 32
         versionCode = 1
         versionName = "0.0.1"
@@ -30,6 +30,10 @@ android {
             "API_HASH",
             """"${findProperty("api_hash")}""""
         )
+    }
+
+    buildFeatures {
+        viewBinding = true
     }
 
     // division resources

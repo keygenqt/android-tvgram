@@ -23,25 +23,7 @@ class HomeViewModel @Inject constructor(
     fun startAuthentication() {
 
 
-        apiTelegram.authState.onEach {
 
-            Timber.e(it.toString())
-
-            when (it) {
-                AuthState.UNAUTHENTICATED -> {
-                    apiTelegram.startAuthentication()
-                }
-                AuthState.WAIT_FOR_NUMBER, AuthState.WAIT_FOR_CODE, AuthState.WAIT_FOR_PASSWORD, AuthState.WAIT_ENCRYPTION_KEY -> {
-                    // login
-                }
-                AuthState.AUTHENTICATED -> {
-                    // loading
-                }
-                AuthState.UNKNOWN -> {
-                    // error
-                }
-            }
-        }.launchIn(viewModelScope)
 
 
         viewModelScope.launch {

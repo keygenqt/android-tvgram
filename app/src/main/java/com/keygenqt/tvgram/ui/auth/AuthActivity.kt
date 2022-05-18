@@ -1,17 +1,13 @@
-package com.keygenqt.tvgram
+package com.keygenqt.tvgram.ui.auth
 
 import android.os.Bundle
-import androidx.fragment.app.FragmentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
-import com.keygenqt.tvgram.ui.home.HomeFragment
-import com.keygenqt.tvgram.ui.other.WelcomeFragment
+import com.keygenqt.tvgram.R
 import dagger.hilt.android.AndroidEntryPoint
 
-/**
- * Loads [HomeFragment].
- */
 @AndroidEntryPoint
-class MainActivity : FragmentActivity() {
+class AuthActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +16,7 @@ class MainActivity : FragmentActivity() {
 
         supportFragmentManager.commit {
             setReorderingAllowed(true)
-            replace(R.id.main_browse_fragment, WelcomeFragment())
+            replace(R.id.main_browse_fragment, AuthFragment())
         }
     }
 }

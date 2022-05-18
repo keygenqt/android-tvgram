@@ -1,0 +1,3 @@
+<resources>
+    <string name="welcome_version">version: %s</string>
+</resources>

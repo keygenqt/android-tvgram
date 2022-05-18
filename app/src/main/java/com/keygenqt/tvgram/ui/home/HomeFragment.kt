@@ -62,14 +62,14 @@ class HomeFragment() : BrowseSupportFragment(), CoroutineScope {
 
 
 
-        viewModel.startAuthentication()
+
 
 
 
 
         setupUIElements()
 
-        loadRows()
+//        loadRows()
 
         setupEventListeners()
     }
@@ -187,7 +187,7 @@ class HomeFragment() : BrowseSupportFragment(), CoroutineScope {
             view.layoutParams = ViewGroup.LayoutParams(GRID_ITEM_WIDTH, GRID_ITEM_HEIGHT)
             view.isFocusable = true
             view.isFocusableInTouchMode = true
-            view.setBackgroundColor(ContextCompat.getColor(context!!, R.color.default_background))
+            view.setBackgroundColor(ContextCompat.getColor(context!!, R.color.colorBackground))
             view.setTextColor(Color.WHITE)
             view.gravity = Gravity.CENTER
             return ViewHolder(view)

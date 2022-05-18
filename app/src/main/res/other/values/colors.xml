@@ -1,10 +1,20 @@
 <resources>
+    // common
+    <color name="colorPrimary">#1882BF</color>
+    <color name="colorPrimaryDark">#42a1d8</color>
+    <color name="colorAccent">#42a1d8</color>
+    <color name="colorBackground">#3d3d3d</color>
+    <color name="colorText">#414547</color>
+    // welcome
+    <color name="colorWelcomeBg">#42a1d8</color>
+    <color name="colorWelcome">#42a1d8</color>
+
+
+
+    // old
     <color name="fastlane_background">#23A0DB</color>
     <color name="search_opaque">#4D4D4D</color>
-
-
     <color name="background_gradient_start">#000000</color>
     <color name="background_gradient_end">#DDDDDD</color>
     <color name="selected_background">#ffaa3f</color>
-    <color name="default_background">#3d3d3d</color>
 </resources>

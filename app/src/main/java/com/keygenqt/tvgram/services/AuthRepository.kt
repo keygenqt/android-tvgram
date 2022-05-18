@@ -8,6 +8,9 @@ class AuthRepository(
     private val api: TelegramApi
 ) {
 
+    /**
+     * Send code
+     */
     suspend fun setAuthenticationPhoneNumber(
         phone: String
     ): TelegramResponse<TdApi.Object> {
@@ -25,11 +28,12 @@ class AuthRepository(
         )
     }
 
-//    suspend fun sendPhoneNumberVerificationCode(
-//        phone: String
-//    ): TelegramResponse<List<TdApi.Chat>> {
-//        return api.send(
-//            TdApi.AuthenticationCodeTypeSms(phone, null)
-//        )
-//    }
+    /**
+     * Check code
+     */
+    suspend fun checkAuthenticationCode(
+        code: String
+    ): TelegramResponse<TdApi.Object> {
+        return api.send(TdApi.CheckAuthenticationCode(code))
+    }
 }

@@ -19,6 +19,7 @@ enum class AuthState {
 
 class TelegramApi(
     private val parameters: TdApi.TdlibParameters,
+    private val _authState: MutableStateFlow<AuthState> = MutableStateFlow(AuthState.UNKNOWN),
 ) : Client.ResultHandler {
 
     private val client = Client.create(this, {
@@ -30,15 +31,11 @@ class TelegramApi(
         send(TdApi.GetAuthorizationState(), this@TelegramApi)
     }
 
-    private val _authState = MutableStateFlow(AuthState.UNKNOWN)
     val authState: StateFlow<AuthState> get() = _authState.asStateFlow()
-
-    suspend fun checkAuthUser() = send<TdApi.Object>(TdApi.SetTdlibParameters(parameters))
 
     override fun onResult(data: TdApi.Object?) {
         when (data?.constructor) {
             TdApi.UpdateAuthorizationState.CONSTRUCTOR -> {
-                Timber.e("!!!! ${(data as TdApi.UpdateAuthorizationState).authorizationState}")
                 onAuthorizationStateUpdated((data as TdApi.UpdateAuthorizationState).authorizationState)
             }
         }
@@ -53,24 +50,17 @@ class TelegramApi(
         }
     }
 
-    private fun onAuthorizationStateUpdated(authorizationState: TdApi.AuthorizationState) {
+    fun checkDatabaseEncryptionKey() {
+        if (_authState.value == AuthState.WAIT_ENCRYPTION_KEY) {
+            client.send(TdApi.CheckDatabaseEncryptionKey()) {
 
-        Timber.e("authorizationState: ${authorizationState}")
-
-        _authState.value = when (authorizationState.constructor) {
-            TdApi.AuthorizationStateWaitEncryptionKey.CONSTRUCTOR -> {
-                client.send(TdApi.CheckDatabaseEncryptionKey()) {
-                    when (it.constructor) {
-                        TdApi.Ok.CONSTRUCTOR -> {
-                            Timber.e("CheckDatabaseEncryptionKey: OK")
-                        }
-                        TdApi.Error.CONSTRUCTOR -> {
-                            Timber.e("CheckDatabaseEncryptionKey: Error")
-                        }
-                    }
-                }
-                AuthState.WAIT_ENCRYPTION_KEY
             }
+        }
+    }
+
+    private fun onAuthorizationStateUpdated(authorizationState: TdApi.AuthorizationState) {
+        _authState.value = when (authorizationState.constructor) {
+            TdApi.AuthorizationStateWaitEncryptionKey.CONSTRUCTOR -> AuthState.WAIT_ENCRYPTION_KEY
             TdApi.AuthorizationStateWaitTdlibParameters.CONSTRUCTOR -> AuthState.UNAUTHENTICATED
             TdApi.AuthorizationStateWaitPhoneNumber.CONSTRUCTOR -> AuthState.WAIT_FOR_NUMBER
             TdApi.AuthorizationStateWaitCode.CONSTRUCTOR -> AuthState.WAIT_FOR_CODE
