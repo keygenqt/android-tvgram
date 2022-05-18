@@ -38,6 +38,14 @@
             android:focusableInTouchMode="true"
             android:text="@string/validate_code_submit" />
 
+        <ProgressBar
+            android:id="@+id/loader"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_marginTop="22dp"
+            android:layout_width="42dp"
+            android:layout_height="42dp"/>
+
     </LinearLayout>
 
 </LinearLayout>

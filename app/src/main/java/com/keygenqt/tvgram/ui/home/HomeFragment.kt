@@ -91,7 +91,7 @@ class HomeFragment : BrowseSupportFragment() {
     }
 
     private fun initUi() {
-        title = getString(R.string.browse_title)
+        title = getString(R.string.app_title)
         // over title
         headersState = HEADERS_ENABLED
         isHeadersTransitionOnBackEnabled = true

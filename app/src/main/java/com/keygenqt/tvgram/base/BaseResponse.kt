@@ -48,9 +48,17 @@ inline infix fun <T> BaseResponse<T>.success(listener: (data: T) -> Unit): BaseR
 /**
  * Callback response error
  */
-inline infix fun <T> BaseResponse<T>.error(predicate: (data: ApiException) -> Unit): BaseResponse<T> {
+inline infix fun <T> BaseResponse<T>.error(listener: (data: ApiException) -> Unit): BaseResponse<T> {
     if (this is BaseResponse.Error) {
-        predicate.invoke(this.exception)
+        listener.invoke(this.exception)
     }
+    return this
+}
+
+/**
+ * Callback response all variants
+ */
+inline infix fun <T> BaseResponse<T>.done(listener: () -> Unit): BaseResponse<T> {
+    listener.invoke()
     return this
 }

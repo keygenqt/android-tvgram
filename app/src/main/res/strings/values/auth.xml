@@ -3,4 +3,5 @@
     <string name="auth_phone_label">Phone</string>
     <string name="auth_error_empty">Phone number is required</string>
     <string name="auth_error_not_match">Phone number is incorrect</string>
+    <string name="auth_phone_hint">+70001112233</string>
 </resources>

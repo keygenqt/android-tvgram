@@ -93,7 +93,7 @@ class HomeOldFragment() : BrowseSupportFragment(), CoroutineScope {
     }
 
     private fun setupUIElements() {
-        title = getString(R.string.browse_title)
+        title = getString(R.string.app_title)
         // over title
         headersState = HEADERS_ENABLED
         isHeadersTransitionOnBackEnabled = true

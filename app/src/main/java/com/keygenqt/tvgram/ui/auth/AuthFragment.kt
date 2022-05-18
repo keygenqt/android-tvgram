@@ -16,12 +16,9 @@
 package com.keygenqt.tvgram.ui.auth
 
 import android.text.Editable
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -52,6 +49,12 @@ class AuthFragment : BaseFragment<AuthFragmentBinding>() {
 
     private fun AuthFragmentBinding.initListener() {
         lifecycleScope.launchWhenStarted {
+            viewModel.isLoading.collect {
+                loader.visibility = if (it) View.VISIBLE else View.GONE
+                btnSubmit.visibility = if (!it) View.VISIBLE else View.GONE
+            }
+        }
+        lifecycleScope.launchWhenStarted {
             viewModel.isError.collect {
                 tePhone.error = it
             }
@@ -76,7 +79,7 @@ class AuthFragment : BaseFragment<AuthFragmentBinding>() {
         }
         tePhone.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                tePhone.setHint(R.string.auth_phone_label)
+                tePhone.setHint(R.string.auth_phone_hint)
                 tePhone.showKeyboard()
             } else {
                 tePhone.hideKeyboard()

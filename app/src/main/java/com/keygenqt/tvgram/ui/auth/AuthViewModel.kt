@@ -17,6 +17,7 @@ package com.keygenqt.tvgram.ui.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.keygenqt.tvgram.base.done
 import com.keygenqt.tvgram.base.error
 import com.keygenqt.tvgram.base.success
 import com.keygenqt.tvgram.services.AuthRepository
@@ -26,7 +27,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -58,15 +58,29 @@ class AuthViewModel @Inject constructor(
     val isError: StateFlow<String?> get() = _isError.asStateFlow()
 
     /**
+     * Start/end query
+     */
+    private val _isLoading = MutableStateFlow(false)
+
+    /**
+     * [StateFlow] for variable [_isLoading]
+     */
+    val isLoading: StateFlow<Boolean> get() = _isLoading.asStateFlow()
+
+    /**
      * Send code by phone
      */
     fun sendPhone(
         phone: String
     ) {
+        _isLoading.value = true
         viewModelScope.launch {
             repo.setAuthenticationPhoneNumber(phone)
                 .success {
                     _isSuccess.value = true
+                }
+                .done {
+                    _isLoading.value = false
                 }
                 .error {
                     _isError.value = it.message

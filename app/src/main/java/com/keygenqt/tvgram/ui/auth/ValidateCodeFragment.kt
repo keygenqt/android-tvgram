@@ -50,6 +50,12 @@ class ValidateCodeFragment : BaseFragment<ValidateCodeFragmentBinding>() {
 
     private fun ValidateCodeFragmentBinding.initListener() {
         lifecycleScope.launchWhenStarted {
+            viewModel.isLoading.collect {
+                loader.visibility = if (it) View.VISIBLE else View.GONE
+                btnSubmit.visibility = if (!it) View.VISIBLE else View.GONE
+            }
+        }
+        lifecycleScope.launchWhenStarted {
             viewModel.isError.collect {
                 teCode.error = it
             }
@@ -76,7 +82,7 @@ class ValidateCodeFragment : BaseFragment<ValidateCodeFragmentBinding>() {
         teCode.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 teCode.showKeyboard()
-                teCode.setHint(R.string.validate_code_label)
+                teCode.setHint(R.string.validate_code_hint)
             } else {
                 teCode.hideKeyboard()
                 teCode.hint = ""

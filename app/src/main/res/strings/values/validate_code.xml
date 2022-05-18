@@ -3,4 +3,5 @@
     <string name="validate_code_label">Code</string>
     <string name="validate_code_error_empty">Code is required</string>
     <string name="validate_code_error_not_match">Code is incorrect</string>
+    <string name="validate_code_hint">00000</string>
 </resources>

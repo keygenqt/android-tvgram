@@ -17,6 +17,7 @@ package com.keygenqt.tvgram.ui.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.keygenqt.tvgram.base.done
 import com.keygenqt.tvgram.base.error
 import com.keygenqt.tvgram.base.success
 import com.keygenqt.tvgram.services.AuthRepository
@@ -57,15 +58,29 @@ class ValidateCodeViewModel @Inject constructor(
     val isError: StateFlow<String?> get() = _isError.asStateFlow()
 
     /**
+     * Start/end query
+     */
+    private val _isLoading = MutableStateFlow(false)
+
+    /**
+     * [StateFlow] for variable [_isLoading]
+     */
+    val isLoading: StateFlow<Boolean> get() = _isLoading.asStateFlow()
+
+    /**
      * Auth by code
      */
     fun validateCode(
         code: String
     ) {
+        _isLoading.value = true
         viewModelScope.launch {
             repo.checkAuthenticationCode(code)
                 .success {
                     _isSuccess.value = true
+                }
+                .done {
+                    _isLoading.value = false
                 }
                 .error {
                     _isError.value = it.message
