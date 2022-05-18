@@ -13,14 +13,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.keygenqt.tvgram.exceptions
-
-import kotlinx.serialization.Serializable
-import javax.annotation.concurrent.Immutable
-
-@Immutable
-@Serializable
-data class ApiException(
-    val code: Int = 0,
-    override val message: String = "",
-) : RuntimeException()

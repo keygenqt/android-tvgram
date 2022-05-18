@@ -16,6 +16,23 @@ buildscript {
     }
 }
 
-tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
+plugins {
+    id("com.diffplug.spotless")
+}
+
+subprojects {
+    apply(plugin = "com.diffplug.spotless")
+    spotless {
+        kotlin {
+            target("**/*.kt")
+            targetExclude("**/build/**")
+            licenseHeaderFile("$rootDir/copyright.txt")
+        }
+        format("misc") {
+            target("**/*.gradle", "**/*.md", "**/.gitignore")
+            trimTrailingWhitespace()
+            indentWithSpaces()
+            endWithNewline()
+        }
+    }
 }

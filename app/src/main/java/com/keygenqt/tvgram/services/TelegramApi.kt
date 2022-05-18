@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022 Vitaliy Zarubin
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.keygenqt.tvgram.base
 
 import com.keygenqt.tvgram.exceptions.ApiException
@@ -71,12 +86,12 @@ class TelegramApi(
         }
     }
 
-    suspend fun <T> send(query: TdApi.Function): TelegramResponse<T> {
-        return callbackFlow<TelegramResponse<T>> {
+    suspend fun <T> send(query: TdApi.Function): BaseResponse<T> {
+        return callbackFlow<BaseResponse<T>> {
             client.send(query, {
                 if (it is TdApi.Error) {
                     trySend(
-                        TelegramResponse.Error(
+                        BaseResponse.Error(
                             ApiException(
                                 code = it.code,
                                 message = it.message
@@ -88,10 +103,10 @@ class TelegramApi(
 
                         Timber.e(result.toString())
 
-                        trySend(TelegramResponse.Success(result))
+                        trySend(BaseResponse.Success(result))
                     } ?: run {
                         trySend(
-                            TelegramResponse.Error(
+                            BaseResponse.Error(
                                 ApiException(
                                     code = -2,
                                     message = "Error loading data"
@@ -102,7 +117,7 @@ class TelegramApi(
                 }
             }, {
                 trySend(
-                    TelegramResponse.Error(
+                    BaseResponse.Error(
                         ApiException(
                             code = -1,
                             message = it.message ?: "App error"

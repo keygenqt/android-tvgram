@@ -2,6 +2,7 @@ pluginManagement {
 
     val kotlinVersion: String by settings
     val gradleVersion: String by settings
+    val spotlessVersion: String by settings
 
     repositories {
         gradlePluginPortal()
@@ -18,6 +19,8 @@ pluginManagement {
 
         // https://github.com/Kotlin/kotlinx.serialization
         kotlin("plugin.serialization") version kotlinVersion
+        // https://github.com/diffplug/spotless
+        id("com.diffplug.spotless") version spotlessVersion
     }
 }
 
