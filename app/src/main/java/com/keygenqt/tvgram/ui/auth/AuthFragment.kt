@@ -18,7 +18,9 @@ import com.keygenqt.tvgram.extensions.hideKeyboard
 import com.keygenqt.tvgram.extensions.showKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 
-
+/**
+ * First step auth Fragment
+ */
 @AndroidEntryPoint
 class AuthFragment : BaseFragment<AuthFragmentBinding>() {
 

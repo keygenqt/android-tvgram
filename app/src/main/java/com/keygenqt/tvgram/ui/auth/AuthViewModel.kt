@@ -14,19 +14,37 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ * [AuthFragment] viewModel
+ */
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val repo: AuthRepository,
 ) : ViewModel() {
 
+    /**
+     * Success response after query
+     */
     private val _isSuccess = MutableStateFlow<Boolean?>(null)
 
+    /**
+     * [StateFlow] for variable [_isSuccess]
+     */
     val isSuccess: StateFlow<Boolean?> get() = _isSuccess.asStateFlow()
 
+    /**
+     * Error response after query
+     */
     private val _isError = MutableStateFlow<String?>(null)
 
+    /**
+     * [StateFlow] for variable [_isError]
+     */
     val isError: StateFlow<String?> get() = _isError.asStateFlow()
 
+    /**
+     * Send code by phone
+     */
     fun sendPhone(
         phone: String
     ) {

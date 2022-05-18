@@ -7,8 +7,9 @@
     <color name="colorText">#414547</color>
     // welcome
     <color name="colorWelcomeBg">#42a1d8</color>
-    <color name="colorWelcome">#42a1d8</color>
-
+    // home
+    <color name="colorHomeMenu">#42a1d8</color>
+    <color name="colorHomeSearch">#ffaa3f</color>
 
 
     // old

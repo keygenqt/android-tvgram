@@ -8,9 +8,21 @@ class ChatsRepository(
     private val api: TelegramApi
 ) {
 
-    suspend fun getChats(
+    /**
+     * Get main chats ids
+     */
+    suspend fun getChatsIds(
         limit: Int
-    ): TelegramResponse<List<TdApi.Chat>> {
+    ): TelegramResponse<TdApi.Chats> {
         return api.send(TdApi.GetChats(TdApi.ChatListMain(), limit))
+    }
+
+    /**
+     * Get chat by id
+     */
+    suspend fun getChatById(
+        id: Long
+    ): TelegramResponse<TdApi.Chat> {
+        return api.send(TdApi.GetChat(id))
     }
 }

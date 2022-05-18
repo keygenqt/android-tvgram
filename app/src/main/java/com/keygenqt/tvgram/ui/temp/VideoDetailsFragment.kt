@@ -33,7 +33,6 @@ import com.bumptech.glide.request.transition.Transition
 import com.keygenqt.tvgram.*
 import com.keygenqt.tvgram.data.Movie
 import com.keygenqt.tvgram.MainActivity
-import com.keygenqt.tvgram.ui.home.CardPresenter
 import com.keygenqt.tvgram.utils.MovieList
 
 import java.util.Collections

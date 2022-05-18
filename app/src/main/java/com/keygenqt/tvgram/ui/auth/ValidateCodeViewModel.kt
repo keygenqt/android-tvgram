@@ -11,22 +11,39 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ * [ValidateCodeFragment] viewModel
+ */
 @HiltViewModel
 class ValidateCodeViewModel @Inject constructor(
     private val repo: AuthRepository,
 ) : ViewModel() {
 
+    /**
+     * Success response after query
+     */
     private val _isSuccess = MutableStateFlow<Boolean?>(null)
 
+    /**
+     * [StateFlow] for variable [_isSuccess]
+     */
     val isSuccess: StateFlow<Boolean?> get() = _isSuccess.asStateFlow()
 
+    /**
+     * Error response after query
+     */
     private val _isError = MutableStateFlow<String?>(null)
 
+    /**
+     * [StateFlow] for variable [_isError]
+     */
     val isError: StateFlow<String?> get() = _isError.asStateFlow()
 
+    /**
+     * Auth by code
+     */
     fun validateCode(
         code: String
     ) {

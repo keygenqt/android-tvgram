@@ -6,6 +6,9 @@ import androidx.fragment.app.commit
 import com.keygenqt.tvgram.R
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Auth Activity with material
+ */
 @AndroidEntryPoint
 class AuthActivity : AppCompatActivity() {
 

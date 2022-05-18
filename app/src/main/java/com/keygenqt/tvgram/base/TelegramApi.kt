@@ -85,6 +85,9 @@ class TelegramApi(
                     )
                 } else {
                     (it as? T)?.let { result ->
+
+                        Timber.e(result.toString())
+
                         trySend(TelegramResponse.Success(result))
                     } ?: run {
                         trySend(

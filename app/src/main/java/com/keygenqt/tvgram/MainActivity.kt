@@ -3,12 +3,12 @@ package com.keygenqt.tvgram
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.commit
-import com.keygenqt.tvgram.ui.home.HomeFragment
+import com.keygenqt.tvgram.ui.temp.HomeOldFragment
 import com.keygenqt.tvgram.ui.other.WelcomeFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
- * Loads [HomeFragment].
+ * Loads [HomeOldFragment].
  */
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {

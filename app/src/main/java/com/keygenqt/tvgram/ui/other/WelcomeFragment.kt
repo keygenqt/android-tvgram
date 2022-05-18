@@ -12,11 +12,12 @@ import com.keygenqt.tvgram.R
 import com.keygenqt.tvgram.base.BaseFragment
 import com.keygenqt.tvgram.databinding.WelcomeFragmentBinding
 import com.keygenqt.tvgram.ui.auth.AuthActivity
-import com.keygenqt.tvgram.ui.auth.AuthFragment
 import com.keygenqt.tvgram.ui.home.HomeFragment
-import com.keygenqt.tvgram.ui.temp.BrowseErrorActivity
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * Welcome Fragment
+ */
 @AndroidEntryPoint
 class WelcomeFragment : BaseFragment<WelcomeFragmentBinding>() {
 
@@ -36,14 +37,10 @@ class WelcomeFragment : BaseFragment<WelcomeFragmentBinding>() {
         lifecycleScope.launchWhenStarted {
             viewModel.isLogin.collect {
                 when (it) {
-                    true -> {
-                        fragmentTransaction.commit {
-                            setReorderingAllowed(true)
-                            replace(R.id.main_browse_fragment, HomeFragment())
-                        }
-                    }
-                    false -> {
-                        startActivity(Intent(requireContext(), AuthActivity::class.java))
+                    false -> startActivity(Intent(requireContext(), AuthActivity::class.java))
+                    true -> fragmentTransaction.commit {
+                        setReorderingAllowed(true)
+                        replace(R.id.main_browse_fragment, HomeFragment())
                     }
                     else -> {}
                 }

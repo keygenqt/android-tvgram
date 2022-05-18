@@ -1,4 +1,4 @@
-package com.keygenqt.tvgram.ui.home
+package com.keygenqt.tvgram.ui.temp
 
 import android.graphics.drawable.Drawable
 import androidx.leanback.widget.ImageCardView

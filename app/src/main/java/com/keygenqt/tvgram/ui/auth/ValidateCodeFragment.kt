@@ -15,9 +15,10 @@ import com.keygenqt.tvgram.extensions.hideKeyboard
 import com.keygenqt.tvgram.extensions.showKeyboard
 import com.keygenqt.tvgram.ui.home.HomeFragment
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
-
+/**
+ * Second step auth Fragment
+ */
 @AndroidEntryPoint
 class ValidateCodeFragment : BaseFragment<ValidateCodeFragmentBinding>() {
 

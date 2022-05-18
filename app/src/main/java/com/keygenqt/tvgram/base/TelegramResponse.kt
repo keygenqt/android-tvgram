@@ -7,6 +7,10 @@ sealed class TelegramResponse<out R> {
     data class Error(val exception: ApiException) : TelegramResponse<Nothing>()
 }
 
+val TelegramResponse<*>?.isSuccess get() = this is TelegramResponse.Success
+
+val TelegramResponse<*>?.isError get() = this is TelegramResponse.Error
+
 inline infix fun <T> TelegramResponse<T>.success(listener: (data: T) -> Unit): TelegramResponse<T> {
     if (this is TelegramResponse.Success && this.data != null) {
         listener.invoke(this.data)
