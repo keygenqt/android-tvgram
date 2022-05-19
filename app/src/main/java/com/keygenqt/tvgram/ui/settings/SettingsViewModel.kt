@@ -13,44 +13,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.keygenqt.tvgram.ui.home
+package com.keygenqt.tvgram.ui.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.keygenqt.tvgram.base.BaseResponse
+import com.keygenqt.tvgram.base.done
 import com.keygenqt.tvgram.base.error
-import com.keygenqt.tvgram.base.isSuccess
 import com.keygenqt.tvgram.base.success
 import com.keygenqt.tvgram.preferences.BasePreferences
-import com.keygenqt.tvgram.services.ChatsRepository
-import com.keygenqt.tvgram.ui.auth.ValidateCodeFragment
+import com.keygenqt.tvgram.services.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.drinkless.td.libcore.telegram.TdApi
 import javax.inject.Inject
 
 /**
- * [ValidateCodeFragment] viewModel
+ * [SettingsFragment] viewModel
  */
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class SettingsViewModel @Inject constructor(
     private val preferences: BasePreferences,
-    private val repoChats: ChatsRepository,
+    private val repo: AuthRepository,
 ) : ViewModel() {
 
     /**
-     * Response chat data
+     * State chat Secret
      */
-    private val _chats = MutableStateFlow(emptyList<TdApi.Chat>())
+    var isChatSecret: Boolean
+        get() = preferences.isChatSecret
+        set(value) {
+            preferences.isChatSecret = value
+        }
 
     /**
-     * [StateFlow] for variable [_chats]
+     * State chat Private
      */
-    val chats: StateFlow<List<TdApi.Chat>> get() = _chats.asStateFlow()
+    var isChatPrivate
+        get() = preferences.isChatPrivate
+        set(value) {
+            preferences.isChatPrivate = value
+        }
+
+    /**
+     * Success response after query
+     */
+    private val _isSuccess = MutableStateFlow<Boolean?>(null)
+
+    /**
+     * [StateFlow] for variable [_isSuccess]
+     */
+    val isSuccess: StateFlow<Boolean?> get() = _isSuccess.asStateFlow()
 
     /**
      * Error response after query
@@ -63,23 +78,27 @@ class HomeViewModel @Inject constructor(
     val isError: StateFlow<String?> get() = _isError.asStateFlow()
 
     /**
-     * Get chats
+     * Start/end query
      */
-    fun updateChats() {
+    private val _isLoading = MutableStateFlow(false)
+
+    /**
+     * [StateFlow] for variable [_isLoading]
+     */
+    val isLoading: StateFlow<Boolean> get() = _isLoading.asStateFlow()
+
+    /**
+     * Logout user
+     */
+    fun logout() {
+        _isLoading.value = true
         viewModelScope.launch {
-            repoChats.getChatsIds(Int.MAX_VALUE)
+            repo.logout()
                 .success {
-                    _chats.value = it.chatIds
-                        .map { id -> async { repoChats.getChatById(id) } }
-                        .map { deferred -> deferred.await() }
-                        .mapNotNull { response -> if (response.isSuccess) (response as BaseResponse.Success).data else null }
-                        .filter { chat ->
-                            when(chat.type.constructor) {
-                                TdApi.ChatTypeSecret.CONSTRUCTOR -> preferences.isChatSecret
-                                TdApi.ChatTypePrivate.CONSTRUCTOR -> preferences.isChatPrivate
-                                else -> true
-                            }
-                        }
+                    _isSuccess.value = true
+                }
+                .done {
+                    _isLoading.value = false
                 }
                 .error {
                     _isError.value = it.message

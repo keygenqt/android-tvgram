@@ -15,20 +15,20 @@
  */
 package com.keygenqt.tvgram.ui.auth
 
+import android.content.Intent
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.keygenqt.tvgram.MainActivity
 import com.keygenqt.tvgram.R
 import com.keygenqt.tvgram.base.BaseFragment
 import com.keygenqt.tvgram.databinding.ValidateCodeFragmentBinding
 import com.keygenqt.tvgram.extensions.addTextChangedListener
 import com.keygenqt.tvgram.extensions.hideKeyboard
 import com.keygenqt.tvgram.extensions.showKeyboard
-import com.keygenqt.tvgram.ui.home.HomeFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -63,11 +63,9 @@ class ValidateCodeFragment : BaseFragment<ValidateCodeFragmentBinding>() {
         lifecycleScope.launchWhenStarted {
             viewModel.isSuccess.collect {
                 if (it == true) {
-                    fragmentTransaction.commit {
-                        setReorderingAllowed(true)
-                        replace(R.id.main_browse_fragment, HomeFragment())
-                    }
-                    requireActivity().onBackPressed()
+                    val intent = Intent(requireContext(), MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
                 }
             }
         }

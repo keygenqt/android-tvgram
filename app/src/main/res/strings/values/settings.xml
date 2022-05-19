@@ -1,0 +1,10 @@
+<resources>
+    <string name="settings_title">Settings</string>
+
+    <string name="settings_group_type">Chats types</string>
+    <string name="settings_item_secret">Secret chat</string>
+    <string name="settings_subtitle_secret">Secret chats are meant for people who want more secrecy than the average fella. All messages in secret chats use end-to-end encryption</string>
+    <string name="settings_item_private">Private chat</string>
+    <string name="settings_subtitle_private">All Telegram chats and group chats are private amongst their participants</string>
+    <string name="settings_item_logout">Logout</string>
+</resources>

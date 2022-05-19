@@ -36,7 +36,7 @@ class WelcomeViewModel @Inject constructor(
 
     fun startAuthentication() {
         viewModelScope.launch {
-            delay(1500)
+            delay(1800)
             apiTelegram.authState.collect {
                 when (it) {
                     AuthState.UNAUTHENTICATED -> apiTelegram.startAuthentication()

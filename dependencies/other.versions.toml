@@ -31,6 +31,8 @@ module = "androidx.lifecycle:lifecycle-viewmodel"
 module = "androidx.lifecycle:lifecycle-viewmodel-ktx"
 [libraries.other_material]
 module = "com.google.android.material:material"
+[libraries.other_security_crypto]
+module = "androidx.security:security-crypto"
 
 # versions
 [libraries.other_core_ktx.version]
@@ -65,6 +67,8 @@ ref = "lifecycleVersion"
 ref = "lifecycleVersion"
 [libraries.other_material.version]
 ref = "materialVersion"
+[libraries.other_security_crypto.version]
+ref = "securityCryptoVersion"
 
 [bundles]
 other = [
@@ -84,4 +88,5 @@ other = [
     "other_lifecycle_viewmodel",
     "other_lifecycle_viewmodel_ktx",
     "other_material",
+    "other_security_crypto",
 ]

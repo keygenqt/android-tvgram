@@ -51,4 +51,11 @@ class AuthRepository(
     ): BaseResponse<TdApi.Object> {
         return api.send(TdApi.CheckAuthenticationCode(code))
     }
+
+    /**
+     * Logout
+     */
+    suspend fun logout(): BaseResponse<TdApi.Object> {
+        return api.send(TdApi.LogOut())
+    }
 }

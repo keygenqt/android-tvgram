@@ -52,7 +52,11 @@ class WelcomeFragment : BaseFragment<WelcomeFragmentBinding>() {
         lifecycleScope.launchWhenStarted {
             viewModel.isLogin.collect {
                 when (it) {
-                    false -> startActivity(Intent(requireContext(), AuthActivity::class.java))
+                    false -> {
+                        val intent = Intent(requireContext(), AuthActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                    }
                     true -> fragmentTransaction.commit {
                         setReorderingAllowed(true)
                         replace(R.id.main_browse_fragment, HomeFragment())

@@ -5,12 +5,15 @@
     <color name="colorAccent">#42a1d8</color>
     <color name="colorBackground">#3d3d3d</color>
     <color name="colorText">#414547</color>
+    <color name="colorTextLite">#80FFFFFF</color>
     // welcome
-    <color name="colorWelcomeBg">#42a1d8</color>
+    <color name="colorWelcomeBg">#3f4d6a</color>
     // home
-    <color name="colorHomeMenu">#42a1d8</color>
+    <color name="colorHomeMenu">#3f4d6a</color>
     <color name="colorHomeSearch">#ffaa3f</color>
-
+    <color name="colorSettingsItemBg">#616161</color>
+    // settings
+    <color name="colorBackgroundRight">#3f4d6a</color>
 
     // old
     <color name="fastlane_background">#23A0DB</color>

@@ -15,19 +15,21 @@
  */
 package com.keygenqt.tvgram.ui.home
 
-import android.graphics.Color
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.view.Gravity
-import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.leanback.app.BackgroundManager
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.*
 import androidx.lifecycle.lifecycleScope
 import com.keygenqt.tvgram.R
-import com.keygenqt.tvgram.ui.temp.HomeOldFragment
+import com.keygenqt.tvgram.extensions.windowHeight
+import com.keygenqt.tvgram.extensions.windowWidth
+import com.keygenqt.tvgram.ui.settings.SettingsActivity
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -39,10 +41,21 @@ class HomeFragment : BrowseSupportFragment() {
 
     private val viewModel by viewModels<HomeViewModel>()
 
+    private val backgroundManager: BackgroundManager? by lazy {
+        BackgroundManager.getInstance(activity)?.apply {
+            attach(requireActivity().window)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initListener()
         initUi()
+        initListener()
+        viewModel.updateChats()
+    }
+
+    override fun onResume() {
+        super.onResume()
         viewModel.updateChats()
     }
 
@@ -56,38 +69,19 @@ class HomeFragment : BrowseSupportFragment() {
         }
         lifecycleScope.launchWhenStarted {
             viewModel.chats.collect { chats ->
-                val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
-                chats.forEachIndexed { index, chat ->
-                    val gridHeader = HeaderItem(index.toLong(), chat.title)
-                    val mGridPresenter = GridItemPresenter()
-                    val gridRowAdapter = ArrayObjectAdapter(mGridPresenter)
-                    gridRowAdapter.add(resources.getString(R.string.grid_view))
-                    gridRowAdapter.add(getString(R.string.error_fragment))
-                    gridRowAdapter.add(resources.getString(R.string.personal_settings))
-                    rowsAdapter.add(ListRow(gridHeader, gridRowAdapter))
+                (adapter as ArrayObjectAdapter).let { adapter ->
+                    adapter.clear()
+                    chats.forEachIndexed { index, chat ->
+                        val gridHeader = HeaderItem(index.toLong(), chat.title)
+                        val mGridPresenter = SettingsItemPresenter(requireContext())
+                        val gridRowAdapter = ArrayObjectAdapter(mGridPresenter)
+                        gridRowAdapter.add(resources.getString(R.string.home_item_settings))
+                        adapter.add(ListRow(gridHeader, gridRowAdapter))
+                    }
                 }
-                adapter = rowsAdapter
+
             }
         }
-    }
-
-    private inner class GridItemPresenter : Presenter() {
-        override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
-            val view = TextView(parent.context)
-            view.layoutParams = ViewGroup.LayoutParams(200, 200)
-            view.isFocusable = true
-            view.isFocusableInTouchMode = true
-            view.setBackgroundColor(ContextCompat.getColor(context!!, R.color.colorBackground))
-            view.setTextColor(Color.WHITE)
-            view.gravity = Gravity.CENTER
-            return ViewHolder(view)
-        }
-
-        override fun onBindViewHolder(viewHolder: ViewHolder, item: Any) {
-            (viewHolder.view as TextView).text = item as String
-        }
-
-        override fun onUnbindViewHolder(viewHolder: ViewHolder) {}
     }
 
     private fun initUi() {
@@ -99,5 +93,50 @@ class HomeFragment : BrowseSupportFragment() {
         brandColor = ContextCompat.getColor(requireContext(), R.color.colorHomeMenu)
         // set search icon color
         searchAffordanceColor = ContextCompat.getColor(requireContext(), R.color.colorHomeSearch)
+        // set adapter
+        adapter = ArrayObjectAdapter(ListRowPresenter())
+        // set click listener
+        onItemViewClickedListener = ItemGridViewClickedListener()
+        onItemViewSelectedListener = ItemMenuViewSelectedListener()
+        // set background
+        val bg = BitmapFactory.decodeResource(resources, R.drawable.bg)
+        val h = bg.height - windowHeight * bg.width / windowWidth
+        backgroundManager?.setBitmap(Bitmap.createBitmap(bg, 0, h, bg.width, bg.height - h))
+    }
+
+    /**
+     * Listener for click grid item
+     */
+    inner class ItemGridViewClickedListener() : OnItemViewClickedListener {
+
+        override fun onItemClicked(
+            itemViewHolder: Presenter.ViewHolder,
+            item: Any,
+            rowViewHolder: RowPresenter.ViewHolder,
+            row: Row
+        ) {
+            if (item is String) {
+                when (item) {
+                    requireContext().getString(R.string.home_item_settings) -> {
+                        startActivity(Intent(requireContext(), SettingsActivity::class.java))
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Listener for click menu item
+     */
+    inner class ItemMenuViewSelectedListener : OnItemViewSelectedListener {
+
+        override fun onItemSelected(
+            itemViewHolder: Presenter.ViewHolder?,
+            item: Any?,
+            rowViewHolder: RowPresenter.ViewHolder,
+            row: Row
+        ) {
+            Timber.e("ItemMenuViewClickedListener")
+        }
     }
 }
