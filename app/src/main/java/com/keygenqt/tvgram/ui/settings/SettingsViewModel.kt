@@ -95,6 +95,9 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             repo.logout()
                 .success {
+                    // clear preferences
+                    preferences.clearCacheAfterLogout()
+                    // set success state
                     _isSuccess.value = true
                 }
                 .done {

@@ -100,9 +100,6 @@ class TelegramApi(
                     )
                 } else {
                     (it as? T)?.let { result ->
-
-                        Timber.e(result.toString())
-
                         trySend(BaseResponse.Success(result))
                     } ?: run {
                         trySend(

@@ -22,6 +22,7 @@ import com.keygenqt.tvgram.BuildConfig.API_ID
 import com.keygenqt.tvgram.base.TelegramApi
 import com.keygenqt.tvgram.services.AuthRepository
 import com.keygenqt.tvgram.services.ChatsRepository
+import com.keygenqt.tvgram.services.CommonRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -71,4 +72,7 @@ object TelegramModule {
 
     @Provides
     fun provideAuthRepository(api: TelegramApi) = AuthRepository(api)
+
+    @Provides
+    fun provideCommonRepository(api: TelegramApi) = CommonRepository(api)
 }

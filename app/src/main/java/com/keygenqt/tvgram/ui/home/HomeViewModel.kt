@@ -21,8 +21,11 @@ import com.keygenqt.tvgram.base.BaseResponse
 import com.keygenqt.tvgram.base.error
 import com.keygenqt.tvgram.base.isSuccess
 import com.keygenqt.tvgram.base.success
+import com.keygenqt.tvgram.data.HomeModel
+import com.keygenqt.tvgram.extensions.messageFileId
 import com.keygenqt.tvgram.preferences.BasePreferences
 import com.keygenqt.tvgram.services.ChatsRepository
+import com.keygenqt.tvgram.services.CommonRepository
 import com.keygenqt.tvgram.ui.auth.ValidateCodeFragment
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -40,17 +43,18 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val preferences: BasePreferences,
     private val repoChats: ChatsRepository,
+    private val repoCommon: CommonRepository,
 ) : ViewModel() {
 
     /**
      * Response chat data
      */
-    private val _chats = MutableStateFlow(emptyList<TdApi.Chat>())
+    private val _homeModels = MutableStateFlow(emptyList<HomeModel>())
 
     /**
-     * [StateFlow] for variable [_chats]
+     * [StateFlow] for variable [_homeModels]
      */
-    val chats: StateFlow<List<TdApi.Chat>> get() = _chats.asStateFlow()
+    val homeModels: StateFlow<List<HomeModel>> get() = _homeModels.asStateFlow()
 
     /**
      * Error response after query
@@ -69,17 +73,42 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             repoChats.getChatsIds(Int.MAX_VALUE)
                 .success {
-                    _chats.value = it.chatIds
+
+                    val chats = it.chatIds
                         .map { id -> async { repoChats.getChatById(id) } }
                         .map { deferred -> deferred.await() }
                         .mapNotNull { response -> if (response.isSuccess) (response as BaseResponse.Success).data else null }
                         .filter { chat ->
-                            when(chat.type.constructor) {
+
+                            if (chat.lastMessage == null) {
+                                return@filter false
+                            }
+
+                            when (chat.type.constructor) {
                                 TdApi.ChatTypeSecret.CONSTRUCTOR -> preferences.isChatSecret
                                 TdApi.ChatTypePrivate.CONSTRUCTOR -> preferences.isChatPrivate
                                 else -> true
                             }
                         }
+
+                    val files =
+                        chats.map { chat ->
+                            async {
+                                repoCommon.getImage(chat.lastMessage?.content?.messageFileId)
+                            }
+                        }
+                            .map { deferred -> deferred.await() }
+                            .map { response -> if (response.isSuccess) (response as BaseResponse.Success).data else null }
+
+                    _homeModels.value = chats.map { chat ->
+                        HomeModel(
+                            chat = chat,
+                            message = chat.lastMessage,
+                            fileImage = files.firstOrNull { file ->
+                                file?.id == chat.lastMessage?.content?.messageFileId
+                            }
+                        )
+                    }
                 }
                 .error {
                     _isError.value = it.message

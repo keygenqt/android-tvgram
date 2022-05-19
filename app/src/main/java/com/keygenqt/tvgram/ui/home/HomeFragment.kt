@@ -51,12 +51,14 @@ class HomeFragment : BrowseSupportFragment() {
         super.onCreate(savedInstanceState)
         initUi()
         initListener()
+        setBackground()
         viewModel.updateChats()
     }
 
     override fun onResume() {
         super.onResume()
         viewModel.updateChats()
+        setBackground()
     }
 
     private fun initListener() {
@@ -68,15 +70,35 @@ class HomeFragment : BrowseSupportFragment() {
             }
         }
         lifecycleScope.launchWhenStarted {
-            viewModel.chats.collect { chats ->
+            viewModel.homeModels.collect { models ->
                 (adapter as ArrayObjectAdapter).let { adapter ->
                     adapter.clear()
-                    chats.forEachIndexed { index, chat ->
-                        val gridHeader = HeaderItem(index.toLong(), chat.title)
-                        val mGridPresenter = SettingsItemPresenter(requireContext())
-                        val gridRowAdapter = ArrayObjectAdapter(mGridPresenter)
-                        gridRowAdapter.add(resources.getString(R.string.home_item_settings))
-                        adapter.add(ListRow(gridHeader, gridRowAdapter))
+                    models.forEachIndexed { index, model ->
+                        ArrayObjectAdapter(PostItemPresenter(requireContext())).apply {
+                            if (model.chat.lastMessage != null) {
+                                add(model)
+                                adapter.add(
+                                    ListRow(
+                                        HeaderItem(
+                                            index.toLong(),
+                                            model.chat.title
+                                        ), this
+                                    )
+                                )
+                            }
+                        }
+                    }
+
+                    ArrayObjectAdapter(SettingsItemPresenter(requireContext())).apply {
+                        add(resources.getString(R.string.home_item_settings))
+                        adapter.add(
+                            ListRow(
+                                HeaderItem(
+                                    models.size.toLong(),
+                                    getString(R.string.home_menu_item_preference)
+                                ), this
+                            )
+                        )
                     }
                 }
 
@@ -98,7 +120,9 @@ class HomeFragment : BrowseSupportFragment() {
         // set click listener
         onItemViewClickedListener = ItemGridViewClickedListener()
         onItemViewSelectedListener = ItemMenuViewSelectedListener()
-        // set background
+    }
+
+    fun setBackground() {
         val bg = BitmapFactory.decodeResource(resources, R.drawable.bg)
         val h = bg.height - windowHeight * bg.width / windowWidth
         backgroundManager?.setBitmap(Bitmap.createBitmap(bg, 0, h, bg.width, bg.height - h))
@@ -108,7 +132,6 @@ class HomeFragment : BrowseSupportFragment() {
      * Listener for click grid item
      */
     inner class ItemGridViewClickedListener() : OnItemViewClickedListener {
-
         override fun onItemClicked(
             itemViewHolder: Presenter.ViewHolder,
             item: Any,
