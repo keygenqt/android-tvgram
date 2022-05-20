@@ -94,7 +94,7 @@ class HomeViewModel @Inject constructor(
                     val files =
                         chats.map { chat ->
                             async {
-                                repoCommon.getImage(chat.lastMessage?.content?.messageFileId)
+                                repoCommon.getFile(chat.lastMessage?.content?.messageFileId)
                             }
                         }
                             .map { deferred -> deferred.await() }

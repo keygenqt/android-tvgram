@@ -34,6 +34,7 @@ import com.keygenqt.tvgram.extensions.windowWidth
 import com.keygenqt.tvgram.ui.photo.PhotoActivity
 import com.keygenqt.tvgram.ui.settings.SettingsActivity
 import com.keygenqt.tvgram.ui.text.TextActivity
+import com.keygenqt.tvgram.ui.video.VideoActivity
 import dagger.hilt.android.AndroidEntryPoint
 import org.drinkless.td.libcore.telegram.TdApi
 import timber.log.Timber
@@ -109,7 +110,6 @@ class HomeFragment : BrowseSupportFragment() {
                         )
                     }
                 }
-
             }
         }
     }
@@ -177,10 +177,20 @@ class HomeFragment : BrowseSupportFragment() {
                         })
                     }
                     is TdApi.MessageVideoNote -> {
-                        Timber.e("open video")
+                        startActivity(Intent(requireContext(), VideoActivity::class.java).apply {
+                            putExtra("isNote", true)
+                            putExtra("videoId", content.videoNote.video.id)
+                            putExtra("title", "VideoNote")
+                            putExtra("description", content.videoNote.video.id)
+                        })
                     }
                     is TdApi.MessageVideo -> {
-                        Timber.e("open video")
+                        startActivity(Intent(requireContext(), VideoActivity::class.java).apply {
+                            putExtra("isNote", false)
+                            putExtra("videoId", content.video.video.id)
+                            putExtra("title", content.video.fileName)
+                            putExtra("description", content.caption.text)
+                        })
                     }
                     else -> {
                         Toast.makeText(

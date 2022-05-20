@@ -8,5 +8,5 @@
     <string name="home_card_type_undefined">Undefined type: \"%s\"</string>
 
     // toast types content
-    <string name="home_toast_type_undefined">This type cannot be viewed. Maybe later, stay tuned for app updates.</string>
+    <string name="home_toast_type_undefined">This type cannot be viewed. Maybe later.</string>
 </resources>

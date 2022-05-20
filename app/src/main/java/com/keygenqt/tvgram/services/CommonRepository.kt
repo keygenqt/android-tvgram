@@ -27,7 +27,7 @@ class CommonRepository(
     /**
      * Get image
      */
-    suspend fun getImage(
+    suspend fun getFile(
         id: Int?
     ): BaseResponse<TdApi.File> {
         return id?.let {

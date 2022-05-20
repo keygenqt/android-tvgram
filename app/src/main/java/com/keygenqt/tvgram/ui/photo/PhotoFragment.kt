@@ -25,12 +25,12 @@ import com.keygenqt.tvgram.databinding.PhotoFragmentBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
- * First step auth Fragment
+ * Photo show Fragment
  */
 @AndroidEntryPoint
 class PhotoFragment(
-    val photo: String?,
-    val text: String?
+    private val photo: String?,
+    private val text: String?
 ) : BaseFragment<PhotoFragmentBinding>() {
 
     override fun onCreateBinding(i: LayoutInflater, v: ViewGroup?) =

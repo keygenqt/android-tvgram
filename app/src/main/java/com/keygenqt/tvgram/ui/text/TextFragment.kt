@@ -27,7 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint
  */
 @AndroidEntryPoint
 class TextFragment(
-    val text: String
+    private val text: String
 ) : BaseFragment<TextFragmentBinding>() {
 
     override fun onCreateBinding(i: LayoutInflater, v: ViewGroup?) =

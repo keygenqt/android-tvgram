@@ -16,8 +16,8 @@
         android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Tvgram">
 
@@ -74,16 +74,11 @@
             android:theme="@style/Theme.Tvgram"
             android:windowSoftInputMode="adjustResize" />
 
-
         <activity
-            android:name=".ui.temp.DetailsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.temp.PlaybackActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.temp.BrowseErrorActivity"
-            android:exported="false" />
+            android:name=".ui.video.VideoActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.TvgramTv" />
 
     </application>
 
