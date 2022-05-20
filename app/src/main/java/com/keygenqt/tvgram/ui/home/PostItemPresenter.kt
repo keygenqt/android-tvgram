@@ -2,6 +2,7 @@ package com.keygenqt.tvgram.ui.home
 
 import android.content.Context
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.leanback.widget.ImageCardView
 import androidx.leanback.widget.Presenter
 import coil.load
@@ -50,7 +51,12 @@ class PostItemPresenter(val context: Context) : Presenter() {
             )
         }
         cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
-        cardView.mainImageView.load(model.fileImage?.local?.path)
+
+//        model.fileImage?.local?.path?.let {
+//            cardView.mainImageView.load(model.fileImage?.local?.path)
+//        } ?: run {
+            cardView.mainImageView.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.dr_message_type_text))
+//        }
     }
 
     override fun onUnbindViewHolder(viewHolder: ViewHolder?) {
