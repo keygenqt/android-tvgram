@@ -214,7 +214,12 @@ class HomeFragment : BrowseSupportFragment() {
             rowViewHolder: RowPresenter.ViewHolder,
             row: Row
         ) {
-
+            if (item != null) {
+                if (item is HomeModel) {
+                    Timber.e(item.chat.title)
+                    Timber.e(item.message.id.toString())
+                }
+            }
         }
     }
 }
