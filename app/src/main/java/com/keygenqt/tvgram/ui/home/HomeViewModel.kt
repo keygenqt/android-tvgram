@@ -103,7 +103,7 @@ class HomeViewModel @Inject constructor(
                     _homeModels.value = chats.map { chat ->
                         HomeModel(
                             chat = chat,
-                            message = chat.lastMessage,
+                            message = chat.lastMessage!!,
                             fileImage = files.firstOrNull { file ->
                                 file?.id == chat.lastMessage?.content?.messageFileId
                             }

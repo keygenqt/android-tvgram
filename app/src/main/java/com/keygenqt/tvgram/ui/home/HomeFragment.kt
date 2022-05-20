@@ -20,6 +20,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.leanback.app.BackgroundManager
@@ -27,10 +28,12 @@ import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.*
 import androidx.lifecycle.lifecycleScope
 import com.keygenqt.tvgram.R
+import com.keygenqt.tvgram.data.HomeModel
 import com.keygenqt.tvgram.extensions.windowHeight
 import com.keygenqt.tvgram.extensions.windowWidth
 import com.keygenqt.tvgram.ui.settings.SettingsActivity
 import dagger.hilt.android.AndroidEntryPoint
+import org.drinkless.td.libcore.telegram.TdApi
 import timber.log.Timber
 
 /**
@@ -90,7 +93,7 @@ class HomeFragment : BrowseSupportFragment() {
                     }
 
                     ArrayObjectAdapter(SettingsItemPresenter(requireContext())).apply {
-                        add(resources.getString(R.string.home_item_settings))
+                        add(resources.getString(R.string.home_card_settings))
                         adapter.add(
                             ListRow(
                                 HeaderItem(
@@ -140,8 +143,38 @@ class HomeFragment : BrowseSupportFragment() {
         ) {
             if (item is String) {
                 when (item) {
-                    requireContext().getString(R.string.home_item_settings) -> {
+                    requireContext().getString(R.string.home_card_settings) -> {
                         startActivity(Intent(requireContext(), SettingsActivity::class.java))
+                    }
+                }
+            } else if (item is HomeModel) {
+                when (val content = item.message.content) {
+                    is TdApi.MessageText -> {
+                        if (android.util.Patterns.WEB_URL.matcher(content.text.text ?: "").matches()) {
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.home_toast_type_undefined),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        } else {
+                            Timber.e("open text")
+                        }
+                    }
+                    is TdApi.MessagePhoto -> {
+                        Timber.e("open phto")
+                    }
+                    is TdApi.MessageVideoNote -> {
+                        Timber.e("open video")
+                    }
+                    is TdApi.MessageVideo -> {
+                        Timber.e("open video")
+                    }
+                    else -> {
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.home_toast_type_undefined),
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
             }
@@ -159,7 +192,7 @@ class HomeFragment : BrowseSupportFragment() {
             rowViewHolder: RowPresenter.ViewHolder,
             row: Row
         ) {
-            Timber.d("ItemMenuViewClickedListener")
+
         }
     }
 }

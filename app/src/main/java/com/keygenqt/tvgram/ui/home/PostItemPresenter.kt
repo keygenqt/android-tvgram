@@ -33,11 +33,11 @@ class PostItemPresenter(val context: Context) : Presenter() {
         val model = item as HomeModel
         val cardView = viewHolder.view as ImageCardView
 
-        val type = model.chat.lastMessage?.content?.let {
+        val type = model.message.content?.let {
             it::class.java.simpleName.replace("Message", "")
         } ?: "Empty"
 
-        cardView.titleText = when (val content = model.chat.lastMessage?.content) {
+        cardView.titleText = when (val content = model.message.content) {
             is TdApi.MessageVideoNote -> type
             is TdApi.MessageCall -> type
             is TdApi.MessageSticker -> type
@@ -48,15 +48,15 @@ class PostItemPresenter(val context: Context) : Presenter() {
             is TdApi.MessageAnimation -> content.caption.text.ifBlank { type }
             is TdApi.MessageDocument -> content.caption.text.ifEmpty { content.document.fileName }
             is TdApi.MessageVideo -> content.caption.text.ifBlank { content.video.fileName }
-            else -> context.getString(R.string.home_item_type_undefined, type)
+            else -> context.getString(R.string.home_card_type_undefined, type)
         }
 
         cardView.mainImageView.setChatDrawable(model)
 
         cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
         cardView.contentText = context.getString(
-            R.string.home_item_date,
-            model.chat.lastMessage?.date?.toDate(),
+            R.string.home_card_date,
+            model.message.date.toDate(),
         )
     }
 

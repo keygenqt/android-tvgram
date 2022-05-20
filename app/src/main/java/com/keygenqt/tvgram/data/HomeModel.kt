@@ -10,6 +10,6 @@ import org.drinkless.td.libcore.telegram.TdApi
  */
 data class HomeModel(
     val chat: TdApi.Chat,
-    val message: TdApi.Message?,
+    val message: TdApi.Message,
     var fileImage: TdApi.File?
 )

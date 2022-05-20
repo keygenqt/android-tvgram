@@ -1,6 +1,12 @@
 <resources>
+    // menu
     <string name="home_menu_item_preference">PREFERENCE</string>
-    <string name="home_item_settings">Settings</string>
-    <string name="home_item_date">Date: %s</string>
-    <string name="home_item_type_undefined">Undefined type: \"%s\"</string>
+
+    // card content
+    <string name="home_card_settings">Settings</string>
+    <string name="home_card_date">Date: %s</string>
+    <string name="home_card_type_undefined">Undefined type: \"%s\"</string>
+
+    // toast types content
+    <string name="home_toast_type_undefined">This type cannot be viewed. Maybe later, stay tuned for app updates.</string>
 </resources>
