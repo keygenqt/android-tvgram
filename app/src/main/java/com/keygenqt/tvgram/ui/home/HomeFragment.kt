@@ -19,6 +19,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Patterns
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
@@ -32,6 +33,7 @@ import com.keygenqt.tvgram.extensions.windowHeight
 import com.keygenqt.tvgram.extensions.windowWidth
 import com.keygenqt.tvgram.ui.photo.PhotoActivity
 import com.keygenqt.tvgram.ui.settings.SettingsActivity
+import com.keygenqt.tvgram.ui.text.TextActivity
 import dagger.hilt.android.AndroidEntryPoint
 import org.drinkless.td.libcore.telegram.TdApi
 import timber.log.Timber
@@ -154,8 +156,8 @@ class HomeFragment : BrowseSupportFragment() {
             } else if (item is HomeModel) {
                 when (val content = item.message.content) {
                     is TdApi.MessageText -> {
-                        if (android.util.Patterns.WEB_URL.matcher(content.text.text ?: "")
-                                .matches()
+                        if (content.text.text.isNullOrBlank()
+                            || Patterns.WEB_URL.matcher(content.text.text ?: "").matches()
                         ) {
                             Toast.makeText(
                                 requireContext(),
@@ -163,7 +165,9 @@ class HomeFragment : BrowseSupportFragment() {
                                 Toast.LENGTH_LONG
                             ).show()
                         } else {
-                            Timber.e("open text")
+                            startActivity(Intent(requireContext(), TextActivity::class.java).apply {
+                                putExtra("text", content.text.text)
+                            })
                         }
                     }
                     is TdApi.MessagePhoto -> {

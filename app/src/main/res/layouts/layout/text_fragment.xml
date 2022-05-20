@@ -7,45 +7,25 @@
 
     <LinearLayout
         android:id="@+id/list1"
-        android:layout_width="0dp"
+        android:layout_width="160dp"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/list2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/ivImage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/bg"
-            tools:ignore="ContentDescription" />
-
-    </LinearLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/list2"
-        android:layout_width="400dp"
+    <LinearLayout
+        android:id="@+id/list3"
+        android:layout_width="160dp"
         android:layout_height="match_parent"
-        android:background="@color/colorBackgroundRight"
+        android:gravity="right"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/list1"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ProgressBar
-            android:id="@+id/loader"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginStart="@dimen/padding"
-            android:layout_marginTop="35dp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="RtlHardcoded">
 
         <TextView
             android:id="@+id/photoTitle"
@@ -54,32 +34,45 @@
             android:fontFamily="sans-serif-light"
             android:paddingTop="24dp"
             android:paddingEnd="36dp"
-            android:text="@string/photo_title"
+            android:text="@string/text_title"
             android:textColor="@android:color/white"
             android:textSize="40sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="RtlSymmetry" />
 
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/list2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/colorBackgroundRight"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/list3"
+        app:layout_constraintStart_toEndOf="@+id/list1"
+        app:layout_constraintTop_toTopOf="parent">
+
         <ScrollView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:paddingTop="90dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/photoText"
+                android:id="@+id/tvText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-light"
                 android:paddingStart="20dp"
+                android:paddingTop="40dp"
                 android:paddingEnd="20dp"
-                android:paddingTop="16dp"
-                android:paddingBottom="30dp"
+                android:paddingBottom="40dp"
                 android:textColor="@color/colorTextWhite"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -88,10 +81,7 @@
                 tools:ignore="RtlSymmetry" />
 
         </ScrollView>
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

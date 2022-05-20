@@ -67,6 +67,13 @@
             android:theme="@style/Theme.Tvgram"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".ui.text.TextActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.Tvgram"
+            android:windowSoftInputMode="adjustResize" />
+
 
         <activity
             android:name=".ui.temp.DetailsActivity"
