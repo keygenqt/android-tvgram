@@ -103,6 +103,16 @@ class SettingsFragment : BaseFragment<SettingsFragmentBinding>() {
                     }
                 ),
                 SettingModel(
+                    switch = viewModel.isChatSupergroup,
+                    title = getString(R.string.settings_item_supergroup),
+                    focus = {
+                        settingsSubtitle.text = getString(R.string.settings_subtitle_supergroup)
+                    },
+                    click = {
+                        viewModel.isChatSupergroup = it
+                    }
+                ),
+                SettingModel(
                     switch = null,
                     title = getString(R.string.settings_item_logout),
                     focus = {

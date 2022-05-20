@@ -21,6 +21,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.leanback.app.BackgroundManager
@@ -28,7 +29,8 @@ import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.*
 import androidx.lifecycle.lifecycleScope
 import com.keygenqt.tvgram.R
-import com.keygenqt.tvgram.data.HomeModel
+import com.keygenqt.tvgram.data.ChatModel
+import com.keygenqt.tvgram.data.MessageModel
 import com.keygenqt.tvgram.extensions.windowHeight
 import com.keygenqt.tvgram.extensions.windowWidth
 import com.keygenqt.tvgram.ui.photo.PhotoActivity
@@ -70,52 +72,12 @@ class HomeFragment : BrowseSupportFragment() {
         setBackground()
     }
 
-    private fun initListener() {
-        lifecycleScope.launchWhenStarted {
-            viewModel.isError.collect {
-                if (it != null) {
-                    Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-        lifecycleScope.launchWhenStarted {
-            viewModel.homeModels.collect { models ->
-                (adapter as ArrayObjectAdapter).let { adapter ->
-                    adapter.clear()
-                    models.forEachIndexed { index, model ->
-                        ArrayObjectAdapter(PostItemPresenter(requireContext())).apply {
-                            if (model.chat.lastMessage != null) {
-                                add(model)
-                                adapter.add(
-                                    ListRow(
-                                        HeaderItem(
-                                            index.toLong(),
-                                            model.chat.title
-                                        ), this
-                                    )
-                                )
-                            }
-                        }
-                    }
-
-                    ArrayObjectAdapter(SettingsItemPresenter(requireContext())).apply {
-                        add(resources.getString(R.string.home_card_settings))
-                        adapter.add(
-                            ListRow(
-                                HeaderItem(
-                                    models.size.toLong(),
-                                    getString(R.string.home_menu_item_preference)
-                                ), this
-                            )
-                        )
-                    }
-                }
-            }
-        }
-    }
-
     private fun initUi() {
-        title = getString(R.string.app_title)
+        badgeDrawable = AppCompatResources.getDrawable(
+            requireContext(),
+            R.drawable.brand_loading
+        )
+
         // over title
         headersState = HEADERS_ENABLED
         isHeadersTransitionOnBackEnabled = true
@@ -136,6 +98,56 @@ class HomeFragment : BrowseSupportFragment() {
         backgroundManager?.setBitmap(Bitmap.createBitmap(bg, 0, h, bg.width, bg.height - h))
     }
 
+    private fun initListener() {
+        lifecycleScope.launchWhenStarted {
+            viewModel.isError.collect {
+                if (it != null) {
+                    Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            viewModel.homeModels.collect { chats ->
+
+                val rowsAdapter = adapter as ArrayObjectAdapter
+                val cardPresenter = CardPresenter(requireContext())
+
+                // set state badge
+                badgeDrawable = AppCompatResources.getDrawable(
+                    requireContext(),
+                    if (chats == null) R.drawable.brand_loading else R.drawable.brand
+                )
+
+                // clear adapter data
+                rowsAdapter.clear()
+
+                // set data messages
+                chats?.forEachIndexed { index, chatModel ->
+                    val listRowAdapter = ArrayObjectAdapter(cardPresenter)
+                    chatModel.messages.forEach { listRowAdapter.add(it) }
+
+                    val header = HeaderItem(index.toLong(), chatModel.chat.title)
+                    rowsAdapter.add(ListRow(header, listRowAdapter))
+                }
+
+                // set preference
+                if (chats != null) {
+                    ArrayObjectAdapter(SettingsItemPresenter(requireContext())).apply {
+                        add(resources.getString(R.string.home_card_settings))
+                        rowsAdapter.add(
+                            ListRow(
+                                HeaderItem(
+                                    chats.size.toLong(),
+                                    getString(R.string.home_menu_item_preference)
+                                ), this
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Listener for click grid item
      */
@@ -153,7 +165,7 @@ class HomeFragment : BrowseSupportFragment() {
                         startActivity(Intent(requireContext(), SettingsActivity::class.java))
                     }
                 }
-            } else if (item is HomeModel) {
+            } else if (item is MessageModel) {
                 when (val content = item.message.content) {
                     is TdApi.MessageText -> {
                         if (content.text.text.isNullOrBlank()
@@ -172,7 +184,7 @@ class HomeFragment : BrowseSupportFragment() {
                     }
                     is TdApi.MessagePhoto -> {
                         startActivity(Intent(requireContext(), PhotoActivity::class.java).apply {
-                            putExtra("photo", item.fileImage?.local?.path)
+                            putExtra("photo", item.file?.local?.path)
                             putExtra("text", content.caption.text)
                         })
                     }
@@ -215,9 +227,8 @@ class HomeFragment : BrowseSupportFragment() {
             row: Row
         ) {
             if (item != null) {
-                if (item is HomeModel) {
+                if (item is ChatModel) {
                     Timber.e(item.chat.title)
-                    Timber.e(item.message.id.toString())
                 }
             }
         }

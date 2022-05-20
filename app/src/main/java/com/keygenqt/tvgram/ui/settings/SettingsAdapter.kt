@@ -37,7 +37,7 @@ class SettingsAdapter(@LayoutRes layout: Int) : BaseAdapter(layout) {
                     if (model.switch != null) View.VISIBLE else View.GONE
 
                 settingsTitle.visibility =
-                    if (position == 0) View.VISIBLE else if (position == 2) View.INVISIBLE else View.GONE
+                    if (position == 0) View.VISIBLE else if (position == 3) View.INVISIBLE else View.GONE
 
                 tvSettingsItem.text = model.title
 

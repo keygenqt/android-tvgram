@@ -34,6 +34,7 @@ interface SettingsPreferences : IAppPreferences {
     enum class KEYS {
         CHAT_SECRET,
         CHAT_PRIVATE,
+        CHAT_SUPERGROUP,
     }
 
     /**
@@ -42,6 +43,7 @@ interface SettingsPreferences : IAppPreferences {
     override fun clearCacheAfterLogout() {
         isChatSecret = false
         isChatPrivate = false
+        isChatSupergroup = false
     }
 
     /**
@@ -57,4 +59,11 @@ interface SettingsPreferences : IAppPreferences {
     var isChatPrivate: Boolean
         get() = p.getBoolean(KEYS.CHAT_PRIVATE.name, false)
         set(value) = p.edit().putBoolean(KEYS.CHAT_PRIVATE.name, value).apply()
+
+    /**
+     * Filter chat type Supergroup. Default - true
+     */
+    var isChatSupergroup: Boolean
+        get() = p.getBoolean(KEYS.CHAT_SUPERGROUP.name, true)
+        set(value) = p.edit().putBoolean(KEYS.CHAT_SUPERGROUP.name, value).apply()
 }

@@ -16,33 +16,40 @@
 package com.keygenqt.tvgram.extensions
 
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmap
 import coil.load
 import com.keygenqt.tvgram.R
-import com.keygenqt.tvgram.data.HomeModel
+import com.keygenqt.tvgram.data.MessageModel
 import org.drinkless.td.libcore.telegram.TdApi
 
 /**
- * Set image by type last message
+ * Set image by type message
  */
-fun ImageView.setChatDrawable(model: HomeModel) {
-    when (val content = model.chat.lastMessage?.content) {
+fun ImageView.setChatImage(model: MessageModel, listener: (Bitmap) -> Unit) {
+    when (val content = model.message.content) {
         is TdApi.MessagePhoto -> {
-            load(model.fileImage?.local?.path)
+            context.loadingImage(model.file?.local?.path) {
+                setImageBitmap(it)
+                listener.invoke(it)
+            }
         }
         is TdApi.MessageVideo -> {
-            setCardVideo(model.fileImage?.local?.path)
+            setCardVideo(model.file?.local?.path, listener)
         }
         is TdApi.MessageVideoNote -> {
-            setCardImage(model.fileImage?.local?.path, true)
+            setCardImage(model.file?.local?.path, true, listener)
         }
         is TdApi.MessageAnimation -> {
-            load(model.fileImage?.local?.path)
+            context.loadingImage(model.file?.local?.path) {
+                setImageBitmap(it)
+                listener.invoke(it)
+            }
         }
         is TdApi.MessageSticker -> {
-            setCardImage(model.fileImage?.local?.path)
+            setCardImage(model.file?.local?.path, false, listener)
         }
         is TdApi.MessageVoiceNote -> {
             setImageDrawable(
@@ -99,7 +106,7 @@ fun ImageView.setChatDrawable(model: HomeModel) {
 /**
  * Merge image with background
  */
-fun ImageView.setCardImage(path: String?, round: Boolean = false) {
+fun ImageView.setCardImage(path: String?, round: Boolean = false, listener: (Bitmap) -> Unit) {
     if (path != null) {
 
         val bg: Bitmap = AppCompatResources.getDrawable(
@@ -107,8 +114,10 @@ fun ImageView.setCardImage(path: String?, round: Boolean = false) {
             R.drawable.card_default_background
         )?.toBitmap(500, 350)!!
 
-        context.loading(path, round) {
-            setImageBitmap(it.resizeAdaptive(250).bitmapMerge(bg))
+        context.loadingImage(path, round) {
+            val mergeImage = it.resizeAdaptive(250).bitmapMerge(bg)
+            listener.invoke(mergeImage)
+            setImageBitmap(mergeImage)
         }
     }
 }
@@ -116,9 +125,9 @@ fun ImageView.setCardImage(path: String?, round: Boolean = false) {
 /**
  * Merge image Video with background
  */
-fun ImageView.setCardVideo(path: String?) {
+fun ImageView.setCardVideo(path: String?, listener: (Bitmap) -> Unit) {
     if (path != null) {
-        context.loading(path, false) {
+        context.loadingImage(path, false) {
 
             val bg: Bitmap = AppCompatResources.getDrawable(
                 context,
@@ -128,8 +137,9 @@ fun ImageView.setCardVideo(path: String?) {
             val playBt: Bitmap = AppCompatResources.getDrawable(
                 context,
                 R.drawable.ic_baseline_play_circle_filled_24
-            )?.toBitmap(90, 90)!!
+            )?.toBitmap(80, 80)!!
 
+            listener.invoke(playBt.bitmapMerge(bg.bitmapMerge(it)))
             setImageBitmap(playBt.bitmapMerge(bg.bitmapMerge(it)))
         }
     }

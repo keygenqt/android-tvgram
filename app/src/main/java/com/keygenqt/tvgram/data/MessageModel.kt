@@ -13,27 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.keygenqt.tvgram.extensions
+package com.keygenqt.tvgram.data
 
-import android.content.Context
 import android.graphics.Bitmap
-import androidx.core.graphics.drawable.toBitmap
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.transform.CircleCropTransformation
+import org.drinkless.td.libcore.telegram.TdApi
 
 /**
- * Loading image
+ * Model menu settings
+ *
+ * @property message [TdApi.Message]
+ * @property file [TdApi.File]
+ * @property drawable [Bitmap]
  */
-fun Context.loadingImage(
-    path: String?,
-    round: Boolean = false,
-    loading: (Bitmap) -> Unit
-) {
-    ImageLoader(this).enqueue(ImageRequest.Builder(this)
-        .data(path)
-        .apply { if (round) transformations(CircleCropTransformation()) }
-        .allowHardware(false)
-        .target { loading.invoke(it.toBitmap()) }
-        .build())
-}
+data class MessageModel(
+    val message: TdApi.Message,
+    var file: TdApi.File? = null,
+    var drawable: Bitmap? = null,
+)

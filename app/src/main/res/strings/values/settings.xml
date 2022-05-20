@@ -6,5 +6,7 @@
     <string name="settings_subtitle_secret">Secret chats are meant for people who want more secrecy than the average fella. All messages in secret chats use end-to-end encryption</string>
     <string name="settings_item_private">Private chat</string>
     <string name="settings_subtitle_private">All Telegram chats and group chats are private amongst their participants</string>
+    <string name="settings_item_supergroup">Supergroup chat</string>
+    <string name="settings_subtitle_supergroup">Supergroups are a powerful tool for building communities and can support up to 200,000 members each</string>
     <string name="settings_item_logout">Logout</string>
 </resources>

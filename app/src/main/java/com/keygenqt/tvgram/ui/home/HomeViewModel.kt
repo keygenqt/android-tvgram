@@ -19,20 +19,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.keygenqt.tvgram.base.BaseResponse
 import com.keygenqt.tvgram.base.error
-import com.keygenqt.tvgram.base.isSuccess
 import com.keygenqt.tvgram.base.success
-import com.keygenqt.tvgram.data.HomeModel
+import com.keygenqt.tvgram.data.ChatModel
+import com.keygenqt.tvgram.data.MessageModel
 import com.keygenqt.tvgram.extensions.messageFileId
 import com.keygenqt.tvgram.preferences.BasePreferences
 import com.keygenqt.tvgram.services.ChatsRepository
 import com.keygenqt.tvgram.services.CommonRepository
 import com.keygenqt.tvgram.ui.auth.ValidateCodeFragment
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.drinkless.td.libcore.telegram.TdApi
 import javax.inject.Inject
 
@@ -49,12 +50,12 @@ class HomeViewModel @Inject constructor(
     /**
      * Response chat data
      */
-    private val _homeModels = MutableStateFlow(emptyList<HomeModel>())
+    private val _homeModels = MutableStateFlow<List<ChatModel>?>(null)
 
     /**
      * [StateFlow] for variable [_homeModels]
      */
-    val homeModels: StateFlow<List<HomeModel>> get() = _homeModels.asStateFlow()
+    val homeModels: StateFlow<List<ChatModel>?> get() = _homeModels.asStateFlow()
 
     /**
      * Error response after query
@@ -71,44 +72,46 @@ class HomeViewModel @Inject constructor(
      */
     fun updateChats() {
         viewModelScope.launch {
+            _homeModels.value = null
             repoChats.getChatsIds(Int.MAX_VALUE)
                 .success {
-
-                    val chats = it.chatIds
-                        .map { id -> async { repoChats.getChatById(id) } }
-                        .map { deferred -> deferred.await() }
-                        .mapNotNull { response -> if (response.isSuccess) (response as BaseResponse.Success).data else null }
-                        .filter { chat ->
-
-                            if (chat.lastMessage == null) {
-                                return@filter false
+                    val list = it.chatIds
+                        .map { id ->
+                            withContext(Dispatchers.Default) {
+                                repoChats.getChatById(id)
                             }
-
-                            when (chat.type.constructor) {
+                        }
+                        .mapNotNull { response ->
+                            if (response is BaseResponse.Success && response.data.lastMessage != null) {
+                                ChatModel(chat = response.data)
+                            } else {
+                                null
+                            }
+                        }
+                        .filter { chat ->
+                            when (chat.chat.type.constructor) {
                                 TdApi.ChatTypeSecret.CONSTRUCTOR -> preferences.isChatSecret
                                 TdApi.ChatTypePrivate.CONSTRUCTOR -> preferences.isChatPrivate
+                                TdApi.ChatTypeSupergroup.CONSTRUCTOR -> preferences.isChatSupergroup
                                 else -> true
                             }
                         }
 
-                    val files =
-                        chats.map { chat ->
-                            async {
-                                repoCommon.getFile(chat.lastMessage?.content?.messageFileId)
+                    list.forEach { chat ->
+                        repoChats.getHistory(chat.chat.id, chat.chat.lastMessage?.id!!)
+                            .success { messages ->
+                                chat.totalCountMessages = messages.totalCount
+                                chat.messages = messages.messages
+                                    .map { m -> MessageModel(message = m) }
+                                chat.messages.forEach { message ->
+                                    repoCommon
+                                        .getFile(message.message.content.messageFileId)
+                                        .success { file -> message.file = file }
+                                }
                             }
-                        }
-                            .map { deferred -> deferred.await() }
-                            .map { response -> if (response.isSuccess) (response as BaseResponse.Success).data else null }
-
-                    _homeModels.value = chats.map { chat ->
-                        HomeModel(
-                            chat = chat,
-                            message = chat.lastMessage!!,
-                            fileImage = files.firstOrNull { file ->
-                                file?.id == chat.lastMessage?.content?.messageFileId
-                            }
-                        )
                     }
+
+                    _homeModels.value = list
                 }
                 .error {
                     _isError.value = it.message

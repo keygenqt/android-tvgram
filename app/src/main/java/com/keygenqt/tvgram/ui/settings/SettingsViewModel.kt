@@ -58,6 +58,15 @@ class SettingsViewModel @Inject constructor(
         }
 
     /**
+     * State chat Supergroup
+     */
+    var isChatSupergroup
+        get() = preferences.isChatSupergroup
+        set(value) {
+            preferences.isChatSupergroup = value
+        }
+
+    /**
      * Success response after query
      */
     private val _isSuccess = MutableStateFlow<Boolean?>(null)

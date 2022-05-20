@@ -21,10 +21,10 @@ import org.drinkless.td.libcore.telegram.TdApi
  * Model menu settings
  *
  * @property chat [TdApi.Chat]
- * @property fileImage [TdApi.File]
+ * @property messages [MessageModel]
  */
-data class HomeModel(
+data class ChatModel(
     val chat: TdApi.Chat,
-    val message: TdApi.Message,
-    var fileImage: TdApi.File?
+    var totalCountMessages: Int = 0,
+    var messages: List<MessageModel> = listOf(),
 )

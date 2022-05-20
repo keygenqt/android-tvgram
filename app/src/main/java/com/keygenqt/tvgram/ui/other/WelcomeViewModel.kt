@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.keygenqt.tvgram.base.AuthState
 import com.keygenqt.tvgram.base.TelegramApi
+import com.keygenqt.tvgram.data.ChatModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -30,13 +31,24 @@ class WelcomeViewModel @Inject constructor(
     private val apiTelegram: TelegramApi,
 ) : ViewModel() {
 
+    /**
+     * Check is login user
+     */
     private val _isLogin = MutableStateFlow<Boolean?>(null)
 
+    /**
+     * [StateFlow] for variable [_isLogin]
+     */
     val isLogin: StateFlow<Boolean?> get() = _isLogin.asStateFlow()
 
+    /**
+     * Query check is login
+     */
     fun startAuthentication() {
         viewModelScope.launch {
+            // delay for animation
             delay(1800)
+            // check state user
             apiTelegram.authState.collect {
                 when (it) {
                     AuthState.UNAUTHENTICATED -> apiTelegram.startAuthentication()

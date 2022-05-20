@@ -16,6 +16,7 @@
 package com.keygenqt.tvgram.base
 
 import com.keygenqt.tvgram.exceptions.ApiException
+import timber.log.Timber
 
 /**
  * Base class for handling response
@@ -40,7 +41,11 @@ val BaseResponse<*>?.isError get() = this is BaseResponse.Error
  */
 inline infix fun <T> BaseResponse<T>.success(listener: (data: T) -> Unit): BaseResponse<T> {
     if (this is BaseResponse.Success && this.data != null) {
-        listener.invoke(this.data)
+        try {
+            listener.invoke(this.data)
+        } catch (ex: Exception) {
+            Timber.e(ex)
+        }
     }
     return this
 }
@@ -50,7 +55,11 @@ inline infix fun <T> BaseResponse<T>.success(listener: (data: T) -> Unit): BaseR
  */
 inline infix fun <T> BaseResponse<T>.error(listener: (data: ApiException) -> Unit): BaseResponse<T> {
     if (this is BaseResponse.Error) {
-        listener.invoke(this.exception)
+        try {
+            listener.invoke(this.exception)
+        } catch (ex: Exception) {
+            listener.invoke(ApiException(code = -1, "Error exception"))
+        }
     }
     return this
 }

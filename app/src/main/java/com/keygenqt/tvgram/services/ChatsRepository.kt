@@ -36,8 +36,19 @@ class ChatsRepository(
      * Get chat by id
      */
     suspend fun getChatById(
-        id: Long
+        chatId: Long
     ): BaseResponse<TdApi.Chat> {
-        return api.send(TdApi.GetChat(id))
+        return api.send(TdApi.GetChat(chatId))
+    }
+
+    /**
+     * Get list messages
+     */
+    suspend fun getHistory(
+        chatId: Long,
+        messageId: Long,
+        limit: Int = 10
+    ): BaseResponse<TdApi.Messages> {
+        return api.send(TdApi.GetChatHistory(chatId, messageId, 0, limit, false))
     }
 }
