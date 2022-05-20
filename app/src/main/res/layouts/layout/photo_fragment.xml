@@ -27,7 +27,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/list2"
-        android:layout_width="400dp"
+        android:layout_width="350dp"
         android:layout_height="match_parent"
         android:background="@color/colorBackgroundRight"
         android:orientation="vertical"
