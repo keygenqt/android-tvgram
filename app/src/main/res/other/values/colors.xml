@@ -9,6 +9,8 @@
     <color name="colorTextLite">#80FFFFFF</color>
     <color name="colorGradientStart">#2E2E2E</color>
     <color name="colorGradientEnd">#8E8E8E</color>
+    <color name="colorGradientStartTr">#E6000000</color>
+    <color name="colorGradientEndTr">#1A000000</color>
     // welcome
     <color name="colorWelcomeBg">#3f4d6a</color>
     // home

@@ -4,10 +4,7 @@ import android.graphics.Bitmap
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmap
-import coil.ImageLoader
 import coil.load
-import coil.request.ImageRequest
-import coil.transform.CircleCropTransformation
 import com.keygenqt.tvgram.R
 import com.keygenqt.tvgram.data.HomeModel
 import org.drinkless.td.libcore.telegram.TdApi
@@ -21,7 +18,7 @@ fun ImageView.setChatDrawable(model: HomeModel) {
             load(model.fileImage?.local?.path)
         }
         is TdApi.MessageVideo -> {
-            load(model.fileImage?.local?.path)
+            setCardVideo(model.fileImage?.local?.path)
         }
         is TdApi.MessageVideoNote -> {
             setCardImage(model.fileImage?.local?.path, true)
@@ -95,15 +92,30 @@ fun ImageView.setCardImage(path: String?, round: Boolean = false) {
             R.drawable.card_default_background
         )?.toBitmap(500, 350)!!
 
-        val imageLoader = ImageLoader(context)
+        context.loading(path, round) {
+            setImageBitmap(it.resizeAdaptive(250).bitmapMerge(bg))
+        }
+    }
+}
 
-        val request = ImageRequest.Builder(context)
-            .data(path)
-            .apply { if (round) transformations(CircleCropTransformation()) }
-            .allowHardware(false)
-            .target { setImageBitmap(it.toBitmap().resizeAdaptive(250).bitmapMerge(bg)) }
-            .build()
+/**
+ * Merge image Video with background
+ */
+fun ImageView.setCardVideo(path: String?) {
+    if (path != null) {
+        context.loading(path, false) {
 
-        imageLoader.enqueue(request)
+            val bg: Bitmap = AppCompatResources.getDrawable(
+                context,
+                R.drawable.card_video_background
+            )?.toBitmap(it.width, it.height)!!
+
+            val playBt: Bitmap = AppCompatResources.getDrawable(
+                context,
+                R.drawable.ic_baseline_play_circle_filled_24
+            )?.toBitmap(90, 90)!!
+
+            setImageBitmap(playBt.bitmapMerge(bg.bitmapMerge(it)))
+        }
     }
 }
