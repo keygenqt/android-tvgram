@@ -5,11 +5,12 @@ Tvgram
 
 Telegram video viewer app for [Android TV](https://www.android.com/tv/) using [TDLib](https://core.telegram.org/)
 
+### Preview
 <p>
 <img src="https://github.com/keygenqt/android-tvgram/master/data/vokoscreenNG-2022-05-20_15-27-22-2.gif" width="100%"/>
 </p>
 
-# License
+### License
 
 ```
 Copyright 2022 Vitaliy Zarubin
