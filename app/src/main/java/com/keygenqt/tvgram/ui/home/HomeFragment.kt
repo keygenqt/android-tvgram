@@ -161,7 +161,7 @@ class HomeFragment : BrowseSupportFragment() {
                         }
                     }
                     is TdApi.MessagePhoto -> {
-                        Timber.e("open phto")
+                        Timber.e("open photo")
                     }
                     is TdApi.MessageVideoNote -> {
                         Timber.e("open video")
