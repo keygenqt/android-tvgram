@@ -91,7 +91,7 @@ class VideoDetailsFragment : DetailsSupportFragment() {
         Glide.with(context!!)
             .asBitmap()
             .centerCrop()
-            .error(R.drawable.default_background)
+            .error(R.drawable.card_default_background)
             .load(movie?.backgroundImageUrl)
             .into<SimpleTarget<Bitmap>>(object : SimpleTarget<Bitmap>() {
                 override fun onResourceReady(
@@ -107,13 +107,13 @@ class VideoDetailsFragment : DetailsSupportFragment() {
     private fun setupDetailsOverviewRow() {
         Log.d(TAG, "doInBackground: " + mSelectedMovie?.toString())
         val row = DetailsOverviewRow(mSelectedMovie)
-        row.imageDrawable = ContextCompat.getDrawable(context!!, R.drawable.default_background)
+        row.imageDrawable = ContextCompat.getDrawable(context!!, R.drawable.card_default_background)
         val width = convertDpToPixel(context!!, DETAIL_THUMB_WIDTH)
         val height = convertDpToPixel(context!!, DETAIL_THUMB_HEIGHT)
         Glide.with(context!!)
             .load(mSelectedMovie?.cardImageUrl)
             .centerCrop()
-            .error(R.drawable.default_background)
+            .error(R.drawable.card_default_background)
             .into<SimpleTarget<Drawable>>(object : SimpleTarget<Drawable>(width, height) {
                 override fun onResourceReady(
                     drawable: Drawable,

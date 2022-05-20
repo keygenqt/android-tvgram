@@ -1,5 +1,6 @@
 <resources>
     <string name="home_menu_item_preference">PREFERENCE</string>
     <string name="home_item_settings">Settings</string>
-    <string name="home_item_type">Date: %s Type: \"%s\"</string>
+    <string name="home_item_date">Date: %s</string>
+    <string name="home_item_type_undefined">Undefined type: \"%s\"</string>
 </resources>

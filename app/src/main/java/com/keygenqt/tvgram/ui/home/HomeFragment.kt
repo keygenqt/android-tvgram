@@ -159,7 +159,7 @@ class HomeFragment : BrowseSupportFragment() {
             rowViewHolder: RowPresenter.ViewHolder,
             row: Row
         ) {
-            Timber.e("ItemMenuViewClickedListener")
+            Timber.d("ItemMenuViewClickedListener")
         }
     }
 }

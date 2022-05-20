@@ -1,6 +1,7 @@
 package com.keygenqt.tvgram.extensions
 
 import android.text.format.DateFormat
+import android.widget.ImageView
 import java.util.*
 
 /**
