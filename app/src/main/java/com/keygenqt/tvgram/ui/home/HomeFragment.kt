@@ -20,7 +20,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.Toast
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.leanback.app.BackgroundManager
@@ -31,6 +30,7 @@ import com.keygenqt.tvgram.R
 import com.keygenqt.tvgram.data.HomeModel
 import com.keygenqt.tvgram.extensions.windowHeight
 import com.keygenqt.tvgram.extensions.windowWidth
+import com.keygenqt.tvgram.ui.photo.PhotoActivity
 import com.keygenqt.tvgram.ui.settings.SettingsActivity
 import dagger.hilt.android.AndroidEntryPoint
 import org.drinkless.td.libcore.telegram.TdApi
@@ -42,6 +42,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class HomeFragment : BrowseSupportFragment() {
 
+    private var updateChat = false
     private val viewModel by viewModels<HomeViewModel>()
 
     private val backgroundManager: BackgroundManager? by lazy {
@@ -60,7 +61,9 @@ class HomeFragment : BrowseSupportFragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.updateChats()
+        if (updateChat) {
+            viewModel.updateChats()
+        }
         setBackground()
     }
 
@@ -125,7 +128,7 @@ class HomeFragment : BrowseSupportFragment() {
         onItemViewSelectedListener = ItemMenuViewSelectedListener()
     }
 
-    fun setBackground() {
+    private fun setBackground() {
         val bg = BitmapFactory.decodeResource(resources, R.drawable.bg)
         val h = bg.height - windowHeight * bg.width / windowWidth
         backgroundManager?.setBitmap(Bitmap.createBitmap(bg, 0, h, bg.width, bg.height - h))
@@ -134,7 +137,7 @@ class HomeFragment : BrowseSupportFragment() {
     /**
      * Listener for click grid item
      */
-    inner class ItemGridViewClickedListener() : OnItemViewClickedListener {
+    inner class ItemGridViewClickedListener : OnItemViewClickedListener {
         override fun onItemClicked(
             itemViewHolder: Presenter.ViewHolder,
             item: Any,
@@ -144,13 +147,16 @@ class HomeFragment : BrowseSupportFragment() {
             if (item is String) {
                 when (item) {
                     requireContext().getString(R.string.home_card_settings) -> {
+                        updateChat = true
                         startActivity(Intent(requireContext(), SettingsActivity::class.java))
                     }
                 }
             } else if (item is HomeModel) {
                 when (val content = item.message.content) {
                     is TdApi.MessageText -> {
-                        if (android.util.Patterns.WEB_URL.matcher(content.text.text ?: "").matches()) {
+                        if (android.util.Patterns.WEB_URL.matcher(content.text.text ?: "")
+                                .matches()
+                        ) {
                             Toast.makeText(
                                 requireContext(),
                                 getString(R.string.home_toast_type_undefined),
@@ -161,7 +167,10 @@ class HomeFragment : BrowseSupportFragment() {
                         }
                     }
                     is TdApi.MessagePhoto -> {
-                        Timber.e("open photo")
+                        startActivity(Intent(requireContext(), PhotoActivity::class.java).apply {
+                            putExtra("photo", item.fileImage?.local?.path)
+                            putExtra("text", content.caption.text)
+                        })
                     }
                     is TdApi.MessageVideoNote -> {
                         Timber.e("open video")
@@ -185,7 +194,6 @@ class HomeFragment : BrowseSupportFragment() {
      * Listener for click menu item
      */
     inner class ItemMenuViewSelectedListener : OnItemViewSelectedListener {
-
         override fun onItemSelected(
             itemViewHolder: Presenter.ViewHolder?,
             item: Any?,
