@@ -18,17 +18,16 @@ package com.keygenqt.tvgram.ui.home
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.leanback.app.BrowseSupportFragment
-import androidx.leanback.widget.Presenter
 import com.keygenqt.tvgram.base.BaseArrayObjectAdapter
 import com.keygenqt.tvgram.data.MessageModel
 import com.keygenqt.tvgram.databinding.HomeAdapterItemBinding
-import com.keygenqt.tvgram.databinding.SettingsAdapterItemBinding
+import com.keygenqt.tvgram.extensions.isUrl
+import com.keygenqt.tvgram.extensions.loadingImage
 import com.keygenqt.tvgram.extensions.toDate
-import timber.log.Timber
-
+import org.drinkless.td.libcore.telegram.TdApi
 
 /**
- * Presenter for post items
+ * Adapter for post items
  */
 class CardAdapter(
     fragment: BrowseSupportFragment,
@@ -36,24 +35,80 @@ class CardAdapter(
 ) : BaseArrayObjectAdapter(fragment, id) {
 
     override fun onBindView(holder: View, model: Any) {
-        if (model is MessageModel) {
-            HomeAdapterItemBinding.bind(holder).apply {
-                tvSettingsItem.text = model.message.date.toDate()
+        HomeAdapterItemBinding.bind(holder).apply {
+
+            ivImageTypeImage.visibility = View.GONE
+            ivImageTypeVideo.visibility = View.GONE
+            ivImageTypeFile.visibility = View.GONE
+            ivImageTypeLink.visibility = View.GONE
+            ivImageTypeVoiceNote.visibility = View.GONE
+            ivImageTypeText.visibility = View.GONE
+            ivImageTypeCall.visibility = View.GONE
+            ivImageTypeUndef.visibility = View.GONE
+
+            if (model is MessageModel) {
+
+                when (val content = model.message.content) {
+                    is TdApi.MessagePhoto -> ivImageTypeImage.visibility = View.VISIBLE
+                    is TdApi.MessageDocument -> ivImageTypeFile.visibility = View.VISIBLE
+                    is TdApi.MessageVideo,
+                    is TdApi.MessageVideoNote -> ivImageTypeVideo.visibility = View.VISIBLE
+                    is TdApi.MessageText -> if (content.isUrl) {
+                        ivImageTypeLink.visibility = View.VISIBLE
+                    } else {
+                        ivImageTypeText.visibility = View.VISIBLE
+                    }
+                    is TdApi.MessageVoiceNote -> ivImageTypeVoiceNote.visibility = View.VISIBLE
+                    is TdApi.MessageCall -> ivImageTypeCall.visibility = View.VISIBLE
+                    else -> ivImageTypeUndef.visibility = View.VISIBLE
+                }
+
+                val title = when (val content = model.message.content) {
+                    is TdApi.MessagePhoto -> null
+                    is TdApi.MessageDocument -> content.document.fileName
+                    is TdApi.MessageVideo -> content.video.fileName
+                    is TdApi.MessageVideoNote -> null
+                    is TdApi.MessageText -> null
+                    is TdApi.MessageVoiceNote -> null
+                    is TdApi.MessageCall -> null
+                    else -> null
+                }
+
+                val desc = when (val content = model.message.content) {
+                    is TdApi.MessagePhoto -> content.caption.text
+                    is TdApi.MessageDocument -> content.caption.text
+                    is TdApi.MessageVideo -> content.caption.text
+                    is TdApi.MessageVideoNote -> null
+                    is TdApi.MessageText -> content.text.text
+                    is TdApi.MessageVoiceNote -> content.caption.text
+                    is TdApi.MessageCall -> null
+                    else -> null
+                }
+
+                tvTitle.visibility =
+                    if (title.isNullOrBlank()) View.GONE else View.VISIBLE
+
+                tvDesc.visibility =
+                    if (desc.isNullOrBlank()) View.GONE else View.VISIBLE
+
+                tvTitle.text = title
+                tvDesc.text = desc
+                tvDate.text = model.message.date.toDate()
+
+                model.drawable?.let {
+                    ivImage.setImageBitmap(it)
+                } ?: run {
+                    model.file?.local?.path?.let { path ->
+                        context.loadingImage(path) {
+                            ivImage.setImageBitmap(it)
+                            model.drawable = it
+                        }
+                    } ?: run {
+                        ivImage.setImageBitmap(null)
+                    }
+                }
             }
         }
-        else if (model is String) {
-            HomeAdapterItemBinding.bind(holder).apply {
-                tvSettingsItem.text = model
-            }
-        }
-    }
-
-    override fun onSelected(model: Any) {
-        Timber.e("onSelected")
-    }
-
-    override fun onClick(model: Any) {
-        Timber.e("onClick")
     }
 
     //    companion object {

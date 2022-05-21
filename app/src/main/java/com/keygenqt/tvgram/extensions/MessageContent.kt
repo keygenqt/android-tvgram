@@ -15,6 +15,7 @@
  */
 package com.keygenqt.tvgram.extensions
 
+import android.util.Patterns
 import org.drinkless.td.libcore.telegram.TdApi
 
 /**
@@ -28,4 +29,13 @@ inline val TdApi.MessageContent.messageFileId: Int?
         is TdApi.MessageAnimation -> this.animation.thumbnail?.file?.id
         is TdApi.MessageSticker -> this.sticker.thumbnail?.file?.id
         else -> null
+    }
+
+/**
+ * Check is url [TdApi.MessageText]
+ */
+inline val TdApi.MessageContent.isUrl: Boolean
+    get() = when (this) {
+        is TdApi.MessageText -> !text.text.isNullOrBlank() && Patterns.WEB_URL.matcher(text.text).matches()
+        else -> false
     }

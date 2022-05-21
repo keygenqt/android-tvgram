@@ -20,7 +20,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.core.view.children
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.*
 
@@ -40,12 +39,16 @@ data class ArrayAdapterGroup(
 abstract class BaseArrayObjectAdapter(
     val fragment: BrowseSupportFragment,
     @LayoutRes val id: Int,
-    selectEffectEnabled: Boolean = true,
     val context: Context = fragment.requireContext(),
     presenter: ListRowPresenter = ListRowPresenter()
 ) : ArrayObjectAdapter(presenter) {
 
+    // cards row
     private val cardsAdapters: MutableList<ArrayObjectAdapter> = mutableListOf()
+
+    // listeners
+    private var selectedListener: (item: Any) -> Unit = {}
+    private var clickListener: (item: Any) -> Unit = {}
 
     init {
         // set listeners
@@ -53,12 +56,13 @@ abstract class BaseArrayObjectAdapter(
         fragment.onItemViewSelectedListener = ItemMenuViewSelectedListener()
         // disable shadow
         presenter.shadowEnabled = false
-        presenter.selectEffectEnabled = selectEffectEnabled
+        presenter.selectEffectEnabled = false
     }
 
     abstract fun onBindView(holder: View, model: Any)
-    abstract fun onSelected(model: Any)
-    abstract fun onClick(model: Any)
+
+    open fun onSelected(item: Any) {}
+    open fun onClick(item: Any) {}
 
     fun addItems(list: List<ArrayAdapterGroup>) {
         list.forEachIndexed { index, group ->
@@ -90,6 +94,14 @@ abstract class BaseArrayObjectAdapter(
         }
     }
 
+    fun setOnSelectedListener(listener: (Any) -> Unit) {
+        selectedListener = listener
+    }
+
+    fun setOnClickListener(listener: (Any) -> Unit) {
+        clickListener = listener
+    }
+
     inner class ItemGridViewClickedListener : OnItemViewClickedListener {
         override fun onItemClicked(
             itemViewHolder: Presenter.ViewHolder,
@@ -98,6 +110,7 @@ abstract class BaseArrayObjectAdapter(
             row: Row
         ) {
             if (item != null) {
+                clickListener.invoke(item)
                 onClick(item)
             }
         }
@@ -111,6 +124,7 @@ abstract class BaseArrayObjectAdapter(
             row: Row
         ) {
             if (item != null) {
+                selectedListener.invoke(item)
                 onSelected(item)
             }
         }

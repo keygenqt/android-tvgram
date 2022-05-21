@@ -27,10 +27,16 @@ import androidx.leanback.app.BrowseSupportFragment
 import androidx.lifecycle.lifecycleScope
 import com.keygenqt.tvgram.R
 import com.keygenqt.tvgram.base.ArrayAdapterGroup
-import com.keygenqt.tvgram.extensions.toBaseAdapter
-import com.keygenqt.tvgram.extensions.windowHeight
-import com.keygenqt.tvgram.extensions.windowWidth
+import com.keygenqt.tvgram.data.MessageModel
+import com.keygenqt.tvgram.extensions.*
+import com.keygenqt.tvgram.utils.IntentHelper.getIntentPhotoActivity
+import com.keygenqt.tvgram.utils.IntentHelper.getIntentSettingsActivity
+import com.keygenqt.tvgram.utils.IntentHelper.getIntentTextActivity
+import com.keygenqt.tvgram.utils.IntentHelper.getIntentVideoActivity
+import com.keygenqt.tvgram.utils.IntentHelper.getIntentVideoNoteActivity
 import dagger.hilt.android.AndroidEntryPoint
+import org.drinkless.td.libcore.telegram.TdApi
+import timber.log.Timber
 
 /**
  * Main page app Fragment
@@ -38,7 +44,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HomeFragment : BrowseSupportFragment() {
 
-    private var updateChat = false
     private val viewModel by viewModels<HomeViewModel>()
 
     private val backgroundManager: BackgroundManager? by lazy {
@@ -51,15 +56,13 @@ class HomeFragment : BrowseSupportFragment() {
         super.onCreate(savedInstanceState)
         initUi()
         initListener()
+        adapterListener()
         setBackground()
         viewModel.updateChats()
     }
 
     override fun onResume() {
         super.onResume()
-        if (updateChat) {
-            viewModel.updateChats()
-        }
         setBackground()
     }
 
@@ -77,39 +80,7 @@ class HomeFragment : BrowseSupportFragment() {
         // set search icon color
         searchAffordanceColor = ContextCompat.getColor(requireContext(), R.color.colorHomeSearch)
         // set adapter
-//        adapter = ArrayObjectAdapter(ListRowPresenter())
         adapter = CardAdapter(this, R.layout.home_adapter_item)
-//        adapter.toBaseAdapter()?.setItems(
-//            listOf(
-//                ArrayAdapterGroup(
-//                    title = "TEST 1",
-//                    cards = listOf(
-//                        "CARD TEST 1 1",
-//                        "CARD TEST 1 2",
-//                        "CARD TEST 1 3",
-//                        "CARD TEST 1 4",
-//                    )
-//                ),
-//            )
-//        )
-//
-//        adapter.toBaseAdapter()?.addItemGroup(
-//            ArrayAdapterGroup(
-//                title = "TEST 2",
-//                cards = listOf(
-//                    "CARD TEST 2 1",
-//                    "CARD TEST 2 2",
-//                    "CARD TEST 2 3",
-//                    "CARD TEST 2 4",
-//                )
-//            ),
-//        )
-//
-//        adapter.toBaseAdapter()?.addItemCard(1, "CARD TEST 2 5")
-
-        // set click listener
-//        onItemViewClickedListener = ItemGridViewClickedListener()
-//        onItemViewSelectedListener = ItemMenuViewSelectedListener()
     }
 
     private fun setBackground() {
@@ -118,6 +89,77 @@ class HomeFragment : BrowseSupportFragment() {
         backgroundManager?.setBitmap(Bitmap.createBitmap(bg, 0, h, bg.width, bg.height - h))
     }
 
+    private fun adapterListener() {
+        adapter.toBaseAdapter()?.setOnSelectedListener {
+            if (it is MessageModel) {
+                Timber.e(it.message.date.toDate())
+            }
+        }
+        adapter.toBaseAdapter()?.setOnClickListener { item ->
+            when (item) {
+                is Long -> {
+//                    (itemViewHolder.view as ImageCardView).mainImageView.setImageDrawable(
+//                        AppCompatResources.getDrawable(
+//                            requireContext(),
+//                            R.drawable.card_loading_background
+//                        )
+//                    )
+//                    viewModel.updateRow(item) {
+//                        synchronized(adapter) {
+//                            (adapter as ArrayObjectAdapter).notifyArrayItemRangeChanged(1, 40)
+//                        }
+//                    }
+                }
+                is String -> {
+                    when (item) {
+                        requireContext().getString(R.string.home_card_settings) -> {
+                            startActivity(requireContext().getIntentSettingsActivity())
+                        }
+                    }
+                }
+                is MessageModel -> {
+                    when (val content = item.message.content) {
+                        is TdApi.MessageText -> if (content.isUrl) {
+                            toastCardUndefined()
+                        } else {
+                            startActivity(
+                                requireContext().getIntentTextActivity(
+                                    text = content.text.text,
+                                )
+                            )
+                        }
+                        is TdApi.MessagePhoto -> item.file?.local?.path?.let { path ->
+                            startActivity(
+                                requireContext().getIntentPhotoActivity(
+                                    path = path,
+                                    text = content.caption.text,
+                                )
+                            )
+                        }
+                        is TdApi.MessageVideoNote -> startActivity(
+                            requireContext().getIntentVideoNoteActivity(
+                                videoId = content.videoNote.video.id,
+                                title = "VideoNote",
+                                description = item.message.date.toDate()
+                            )
+                        )
+                        is TdApi.MessageVideo -> startActivity(
+                            requireContext().getIntentVideoActivity(
+                                videoId = content.video.video.id,
+                                title = content.video.fileName,
+                                description = content.caption.text
+                            )
+                        )
+                        else -> toastCardUndefined()
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * ViewModel listeners
+     */
     private fun initListener() {
         lifecycleScope.launchWhenStarted {
             viewModel.isError.collect {
@@ -138,173 +180,26 @@ class HomeFragment : BrowseSupportFragment() {
                         )
                     }
                 })
-                adapter.toBaseAdapter()?.addItemGroup(
-                    ArrayAdapterGroup(
-                        title = resources.getString(R.string.home_card_settings),
-                        cards = listOf(getString(R.string.home_menu_item_preference))
-                    ),
-                )
-
-
-//
-//                val rowsAdapter = adapter as ArrayObjectAdapter
-//                val cardPresenter = CardAdapter(this@HomeFragment)
-//
-//                // set state badge
-//                badgeDrawable = AppCompatResources.getDrawable(
-//                    requireContext(),
-//                    if (chats == null) R.drawable.brand_loading else R.drawable.brand
-//                )
-//
-//                // clear adapter data
-//                rowsAdapter.clear()
-//
-//                // set data messages
-//                chats?.forEachIndexed { index, chatModel ->
-//                    val listRowAdapter = ArrayObjectAdapter(cardPresenter)
-//                    chatModel.messages.forEachIndexed { index2, messageModel ->
-//                        listRowAdapter.add(messageModel)
-//                        if (chatModel.messages.size - 1 == index2) {
-//                            listRowAdapter.add(messageModel.message.id)
-//                        }
-//                    }
-//                    val header = HeaderItem(index.toLong(), chatModel.chat.title)
-//                    rowsAdapter.add(ListRow(header, listRowAdapter))
-//                }
-//
-//                // set preference
-//                if (chats != null) {
-//                    ArrayObjectAdapter(SettingsItemPresenter(requireContext())).apply {
-//                        add(resources.getString(R.string.home_card_settings))
-//                        rowsAdapter.add(
-//                            ListRow(
-//                                HeaderItem(
-//                                    chats.size.toLong(),
-//                                    getString(R.string.home_menu_item_preference)
-//                                ), this
-//                            )
-//                        )
-//                    }
-//                }
+                if (chats != null) {
+                    adapter.toBaseAdapter()?.addItemGroup(
+                        ArrayAdapterGroup(
+                            title = resources.getString(R.string.home_menu_item_preference),
+                            cards = listOf(getString(R.string.home_card_settings))
+                        ),
+                    )
+                }
             }
         }
     }
 
-//    /**
-//     * Listener for click grid item
-//     */
-//    inner class ItemGridViewClickedListener : OnItemViewClickedListener {
-//        override fun onItemClicked(
-//            itemViewHolder: Presenter.ViewHolder,
-//            item: Any,
-//            rowViewHolder: RowPresenter.ViewHolder,
-//            row: Row
-//        ) {
-//            when (item) {
-//                is Long -> {
-//                    (itemViewHolder.view as ImageCardView).mainImageView.setImageDrawable(
-//                        AppCompatResources.getDrawable(
-//                            requireContext(),
-//                            R.drawable.card_loading_background
-//                        )
-//                    )
-//                    viewModel.updateRow(item) {
-//                        synchronized(adapter) {
-//                            (adapter as ArrayObjectAdapter).notifyArrayItemRangeChanged(1, 40)
-//                        }
-//                    }
-//                }
-//                is String -> {
-//                    when (item) {
-//                        requireContext().getString(R.string.home_card_settings) -> {
-//                            updateChat = true
-//                            startActivity(Intent(requireContext(), SettingsActivity::class.java))
-//                        }
-//                    }
-//                }
-//                is MessageModel -> {
-//                    when (val content = item.message.content) {
-//                        is TdApi.MessageText -> {
-//                            if (content.text.text.isNullOrBlank()
-//                                || Patterns.WEB_URL.matcher(content.text.text ?: "").matches()
-//                            ) {
-//                                Toast.makeText(
-//                                    requireContext(),
-//                                    getString(R.string.home_toast_type_undefined),
-//                                    Toast.LENGTH_LONG
-//                                ).show()
-//                            } else {
-//                                startActivity(
-//                                    Intent(
-//                                        requireContext(),
-//                                        TextActivity::class.java
-//                                    ).apply {
-//                                        putExtra("text", content.text.text)
-//                                    })
-//                            }
-//                        }
-//                        is TdApi.MessagePhoto -> {
-//                            startActivity(
-//                                Intent(
-//                                    requireContext(),
-//                                    PhotoActivity::class.java
-//                                ).apply {
-//                                    putExtra("photo", item.file?.local?.path)
-//                                    putExtra("text", content.caption.text)
-//                                })
-//                        }
-//                        is TdApi.MessageVideoNote -> {
-//                            startActivity(
-//                                Intent(
-//                                    requireContext(),
-//                                    VideoActivity::class.java
-//                                ).apply {
-//                                    putExtra("isNote", true)
-//                                    putExtra("videoId", content.videoNote.video.id)
-//                                    putExtra("title", "VideoNote")
-//                                    putExtra("description", content.videoNote.video.id)
-//                                })
-//                        }
-//                        is TdApi.MessageVideo -> {
-//                            startActivity(
-//                                Intent(
-//                                    requireContext(),
-//                                    VideoActivity::class.java
-//                                ).apply {
-//                                    putExtra("isNote", false)
-//                                    putExtra("videoId", content.video.video.id)
-//                                    putExtra("title", content.video.fileName)
-//                                    putExtra("description", content.caption.text)
-//                                })
-//                        }
-//                        else -> {
-//                            Toast.makeText(
-//                                requireContext(),
-//                                getString(R.string.home_toast_type_undefined),
-//                                Toast.LENGTH_LONG
-//                            ).show()
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-//    /**
-//     * Listener for click menu item
-//     */
-//    inner class ItemMenuViewSelectedListener : OnItemViewSelectedListener {
-//        override fun onItemSelected(
-//            itemViewHolder: Presenter.ViewHolder?,
-//            item: Any?,
-//            rowViewHolder: RowPresenter.ViewHolder,
-//            row: Row
-//        ) {
-//            if (item != null) {
-//                if (item is ChatModel) {
-//                    Timber.e(item.chat.title)
-//                }
-//            }
-//        }
-//    }
+    /**
+     * Show error open card
+     */
+    private fun toastCardUndefined() {
+        Toast.makeText(
+            requireContext(),
+            getString(R.string.home_toast_type_undefined),
+            Toast.LENGTH_LONG
+        ).show()
+    }
 }
