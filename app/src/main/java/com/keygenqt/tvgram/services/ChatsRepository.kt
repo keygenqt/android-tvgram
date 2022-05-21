@@ -47,7 +47,7 @@ class ChatsRepository(
     suspend fun getHistory(
         chatId: Long,
         messageId: Long,
-        limit: Int = 10
+        limit: Int = 30
     ): BaseResponse<TdApi.Messages> {
         return api.send(TdApi.GetChatHistory(chatId, messageId, 0, limit, false))
     }
