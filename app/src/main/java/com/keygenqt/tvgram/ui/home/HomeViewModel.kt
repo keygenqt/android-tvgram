@@ -101,8 +101,9 @@ class HomeViewModel @Inject constructor(
                         repoChats.getHistory(chat.chat.id, chat.chat.lastMessage?.id!!)
                             .success { messages ->
                                 chat.totalCountMessages = messages.totalCount
-                                chat.messages = messages.messages
-                                    .map { m -> MessageModel(message = m) }
+                                chat.messages =
+                                    (listOf(chat.chat.lastMessage!!) + messages.messages)
+                                        .map { m -> MessageModel(message = m) }
                                 chat.messages.forEach { message ->
                                     repoCommon
                                         .getFile(message.message.content.messageFileId)
@@ -116,6 +117,33 @@ class HomeViewModel @Inject constructor(
                 .error {
                     _isError.value = it.message
                 }
+        }
+    }
+
+    /**
+     * Update row posts
+     */
+    fun updateRow(messageId: Long, success: () -> Unit) {
+        viewModelScope.launch {
+            _homeModels.value?.let { chats ->
+                for (chat in chats) {
+                    if (chat.messages.last().message.id == messageId) {
+                        repoChats.getHistory(chat.chat.id, messageId)
+                            .success { messages ->
+                                val result =
+                                    messages.messages.map { m -> MessageModel(message = m) }
+                                result.forEach { message ->
+                                    repoCommon
+                                        .getFile(message.message.content.messageFileId)
+                                        .success { file -> message.file = file }
+                                }
+                                chat.messages = result
+                            }
+                    }
+                    break
+                }
+            }
+            success.invoke()
         }
     }
 }
