@@ -2,12 +2,34 @@ package com.keygenqt.tvgram.utils
 
 import android.content.Context
 import android.content.Intent
+import com.keygenqt.tvgram.MainActivity
+import com.keygenqt.tvgram.ui.auth.AuthActivity
 import com.keygenqt.tvgram.ui.photo.PhotoActivity
 import com.keygenqt.tvgram.ui.settings.SettingsActivity
 import com.keygenqt.tvgram.ui.text.TextActivity
 import com.keygenqt.tvgram.ui.video.VideoActivity
 
 object IntentHelper {
+
+    /**
+     * Start [AuthActivity]
+     */
+    fun Context.getIntentAuthActivity() = Intent(
+        this,
+        AuthActivity::class.java
+    ).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    }
+
+    /**
+     * Start [MainActivity]
+     */
+    fun Context.getIntentMainActivity() = Intent(
+        this,
+        MainActivity::class.java
+    ).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    }
 
     /**
      * Start [VideoActivity]

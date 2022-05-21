@@ -15,12 +15,10 @@
  */
 package com.keygenqt.tvgram.ui.settings
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,10 +27,8 @@ import com.keygenqt.tvgram.base.BaseFragment
 import com.keygenqt.tvgram.data.SettingModel
 import com.keygenqt.tvgram.databinding.SettingsFragmentBinding
 import com.keygenqt.tvgram.extensions.baseAdapter
-import com.keygenqt.tvgram.ui.auth.AuthActivity
-import com.keygenqt.tvgram.ui.auth.ValidateCodeFragment
+import com.keygenqt.tvgram.utils.IntentHelper.getIntentAuthActivity
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 /**
  * First step auth Fragment
@@ -67,9 +63,7 @@ class SettingsFragment : BaseFragment<SettingsFragmentBinding>() {
         lifecycleScope.launchWhenStarted {
             viewModel.isSuccess.collect {
                 if (it == true) {
-                    val intent = Intent(requireContext(), AuthActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
+                    startActivity(requireContext().getIntentAuthActivity())
                 }
             }
         }

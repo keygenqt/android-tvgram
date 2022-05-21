@@ -28,6 +28,7 @@ import com.keygenqt.tvgram.base.BaseFragment
 import com.keygenqt.tvgram.databinding.WelcomeFragmentBinding
 import com.keygenqt.tvgram.ui.auth.AuthActivity
 import com.keygenqt.tvgram.ui.home.HomeFragment
+import com.keygenqt.tvgram.utils.IntentHelper.getIntentMainActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -53,9 +54,7 @@ class WelcomeFragment : BaseFragment<WelcomeFragmentBinding>() {
             viewModel.isLogin.collect {
                 when (it) {
                     false -> {
-                        val intent = Intent(requireContext(), AuthActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
+                        startActivity(requireContext().getIntentMainActivity())
                     }
                     true -> fragmentTransaction.commit {
                         setReorderingAllowed(true)
