@@ -18,10 +18,17 @@ package com.keygenqt.tvgram.ui.photo
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import coil.load
+import com.keygenqt.tvgram.R
 import com.keygenqt.tvgram.base.BaseFragment
 import com.keygenqt.tvgram.databinding.PhotoFragmentBinding
+import com.keygenqt.tvgram.ui.video.VideoFragment
+import com.keygenqt.tvgram.ui.video.VideoViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -29,16 +36,38 @@ import dagger.hilt.android.AndroidEntryPoint
  */
 @AndroidEntryPoint
 class PhotoFragment(
-    private val photo: String?,
+    private val photo: Int,
     private val text: String?
 ) : BaseFragment<PhotoFragmentBinding>() {
+
+    private val viewModel by viewModels<PhotoViewModel>()
 
     override fun onCreateBinding(i: LayoutInflater, v: ViewGroup?) =
         PhotoFragmentBinding.inflate(i, v, false)
 
     override fun onCreateView(binding: PhotoFragmentBinding): View {
         binding.initUi()
+        binding.initListener()
+        viewModel.downloadPhoto(photo)
         return binding.root
+    }
+
+    private fun PhotoFragmentBinding.initListener() {
+        lifecycleScope.launchWhenStarted {
+            viewModel.isError.collect {
+                if (it != null) {
+                    Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+                    requireActivity().onBackPressed()
+                }
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            viewModel.isSuccess.collect {
+                if (it != null) {
+                    ivImage.load(it)
+                }
+            }
+        }
     }
 
     private fun PhotoFragmentBinding.initUi() {
@@ -49,7 +78,5 @@ class PhotoFragment(
             list2.visibility = View.VISIBLE
             photoText.text = text
         }
-        // insert photo
-        ivImage.load(photo)
     }
 }

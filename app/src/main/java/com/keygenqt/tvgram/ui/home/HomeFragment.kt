@@ -117,10 +117,10 @@ class HomeFragment : BrowseSupportFragment() {
                                 )
                             )
                         }
-                        is TdApi.MessagePhoto -> item.file?.local?.path?.let { path ->
+                        is TdApi.MessagePhoto -> item.file?.id.let { id ->
                             startActivity(
                                 requireContext().getIntentPhotoActivity(
-                                    path = path,
+                                    photoId = id,
                                     text = content.caption.text,
                                 )
                             )

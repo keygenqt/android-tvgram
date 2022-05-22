@@ -69,13 +69,13 @@ object IntentHelper {
      * Start [PhotoActivity] note
      */
     fun Context.getIntentPhotoActivity(
-        path: String,
+        photoId: Int?,
         text: String,
     ) = Intent(
         this,
         PhotoActivity::class.java
     ).apply {
-        putExtra("photo", path)
+        putExtra("photo", photoId)
         putExtra("text", text)
     }
 

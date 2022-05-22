@@ -35,7 +35,7 @@ class PhotoActivity : AppCompatActivity() {
         supportFragmentManager.commit {
             setReorderingAllowed(true)
             replace(R.id.main_browse_fragment, PhotoFragment(
-                photo = intent.getStringExtra("photo"),
+                photo = intent.getIntExtra("photo", 0),
                 text = intent.getStringExtra("text")
             ))
         }
