@@ -15,12 +15,7 @@
  */
 package com.keygenqt.tvgram.ui.settings
 
-import android.app.ActivityManager
 import android.app.Application
-import android.content.Context
-import android.content.Context.ACTIVITY_SERVICE
-import android.os.Build
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.keygenqt.tvgram.base.done
@@ -33,7 +28,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 
@@ -110,9 +104,18 @@ class SettingsViewModel @Inject constructor(
      */
     fun clearCache() {
         val rootDir = "data/data/${app.applicationContext.packageName}/files"
-        File("$rootDir/videos").deleteRecursively()
-        File("$rootDir/photos").deleteRecursively()
-        File("$rootDir/stickers").deleteRecursively()
+        File("$rootDir/videos").apply {
+            deleteRecursively()
+            mkdir()
+        }
+        File("$rootDir/stickers").apply {
+            deleteRecursively()
+            mkdir()
+        }
+        File("$rootDir/photos").apply {
+            deleteRecursively()
+            mkdir()
+        }
     }
 
     /**
