@@ -170,6 +170,13 @@ class HomeFragment : BrowseSupportFragment() {
         }
         lifecycleScope.launchWhenStarted {
             viewModel.homeModels.collect { chats ->
+
+                // set state badge
+                badgeDrawable = AppCompatResources.getDrawable(
+                    requireContext(),
+                    if (chats == null) R.drawable.brand_loading else R.drawable.brand
+                )
+
                 adapter.toBaseAdapter()?.setItems(mutableListOf<ArrayAdapterGroup>().apply {
                     chats?.forEach { chat ->
                         add(

@@ -5,6 +5,7 @@
     // card content
     <string name="home_card_settings">Settings</string>
     <string name="home_card_date">Date: %s</string>
+    <string name="home_card_duration">Duration: %s</string>
     <string name="home_card_type_undefined">Undefined type: \"%s\"</string>
 
     // toast types content

@@ -25,5 +25,5 @@ import java.util.*
 fun Int.toDate(): String {
     val calendar: Calendar = Calendar.getInstance(Locale.ENGLISH)
     calendar.timeInMillis = this * 1000L
-    return DateFormat.format("dd MMMM yyyy", calendar).toString()
+    return DateFormat.format("HH:mm, dd MMMM", calendar).toString()
 }
