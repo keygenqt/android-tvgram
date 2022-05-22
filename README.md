@@ -7,7 +7,7 @@ Telegram video viewer app for [Android TV](https://www.android.com/tv/) using [T
 
 ### Preview
 <p>
-<img src="https://github.com/keygenqt/android-tvgram/blob/main/data/vokoscreenNG-2022-05-20_15-27-22-2.gif?raw=true" width="100%"/>
+<img src="https://github.com/keygenqt/android-tvgram/blob/main/data/vokoscreenNG-2022-05-22_20-47-59.gif?raw=true" width="100%"/>
 </p>
 
 ### License
