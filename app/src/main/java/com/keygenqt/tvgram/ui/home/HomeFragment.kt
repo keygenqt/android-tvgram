@@ -92,6 +92,7 @@ class HomeFragment : BrowseSupportFragment() {
     private fun adapterListener() {
         adapter.toBaseAdapter()?.setOnSelectedListener {
             if (it is MessageModel) {
+                // @todo
                 Timber.e(it.message.date.toDate())
             }
         }

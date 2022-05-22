@@ -18,6 +18,7 @@ package com.keygenqt.tvgram.ui.video
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.view.KeyEvent
 import androidx.leanback.app.BackgroundManager
 import androidx.leanback.app.VideoSupportFragment
 import androidx.leanback.app.VideoSupportFragmentGlueHost
@@ -62,6 +63,19 @@ class VideoFragment(
         transportControlGlue.title = title
         transportControlGlue.subtitle = description
         transportControlGlue.playWhenPrepared()
+
+        // Video rewind
+        setOnKeyInterceptListener { _, _, ev ->
+            if (ev?.keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                transportControlGlue.seekTo(transportControlGlue.currentPosition + 5000)
+                return@setOnKeyInterceptListener true
+            }
+            if (ev?.keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+                transportControlGlue.seekTo(transportControlGlue.currentPosition - 5000)
+                return@setOnKeyInterceptListener true
+            }
+            false
+        }
 
         playerAdapter.setDataSource(Uri.parse(path))
     }
