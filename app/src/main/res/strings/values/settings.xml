@@ -8,5 +8,8 @@
     <string name="settings_subtitle_private">All Telegram chats and group chats are private amongst their participants</string>
     <string name="settings_item_supergroup">Supergroup chat</string>
     <string name="settings_subtitle_supergroup">Supergroups are a powerful tool for building communities and can support up to 200,000 members each</string>
+    <string name="settings_item_cache">Clear cache</string>
+    <string name="settings_subtitle_cache">The data is being downloaded. If required, you can clear the application\'s cache to free up space on your hard drive.</string>
+    <string name="settings_clear_success">Cache cleared successfully</string>
     <string name="settings_item_logout">Logout</string>
 </resources>

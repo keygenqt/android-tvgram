@@ -15,6 +15,12 @@
  */
 package com.keygenqt.tvgram.ui.settings
 
+import android.app.ActivityManager
+import android.app.Application
+import android.content.Context
+import android.content.Context.ACTIVITY_SERVICE
+import android.os.Build
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.keygenqt.tvgram.base.done
@@ -23,18 +29,21 @@ import com.keygenqt.tvgram.base.success
 import com.keygenqt.tvgram.preferences.BasePreferences
 import com.keygenqt.tvgram.services.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.io.File
 import javax.inject.Inject
+
 
 /**
  * [SettingsFragment] viewModel
  */
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
+    private val app: Application,
     private val preferences: BasePreferences,
     private val repo: AuthRepository,
 ) : ViewModel() {
@@ -95,6 +104,16 @@ class SettingsViewModel @Inject constructor(
      * [StateFlow] for variable [_isLoading]
      */
     val isLoading: StateFlow<Boolean> get() = _isLoading.asStateFlow()
+
+    /**
+     * Clear cache app
+     */
+    fun clearCache() {
+        val rootDir = "data/data/${app.applicationContext.packageName}/files"
+        File("$rootDir/videos").deleteRecursively()
+        File("$rootDir/photos").deleteRecursively()
+        File("$rootDir/stickers").deleteRecursively()
+    }
 
     /**
      * Logout user

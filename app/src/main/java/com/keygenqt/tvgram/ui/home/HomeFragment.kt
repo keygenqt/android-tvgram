@@ -92,25 +92,11 @@ class HomeFragment : BrowseSupportFragment() {
     private fun adapterListener() {
         adapter.toBaseAdapter()?.setOnSelectedListener {
             if (it is MessageModel) {
-                // @todo
-                Timber.e(it.message.date.toDate())
+                // selected item
             }
         }
         adapter.toBaseAdapter()?.setOnClickListener { item ->
             when (item) {
-                is Long -> {
-//                    (itemViewHolder.view as ImageCardView).mainImageView.setImageDrawable(
-//                        AppCompatResources.getDrawable(
-//                            requireContext(),
-//                            R.drawable.card_loading_background
-//                        )
-//                    )
-//                    viewModel.updateRow(item) {
-//                        synchronized(adapter) {
-//                            (adapter as ArrayObjectAdapter).notifyArrayItemRangeChanged(1, 40)
-//                        }
-//                    }
-                }
                 is String -> {
                     when (item) {
                         requireContext().getString(R.string.home_card_settings) -> {

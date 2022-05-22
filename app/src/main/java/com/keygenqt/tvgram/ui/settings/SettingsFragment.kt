@@ -108,6 +108,21 @@ class SettingsFragment : BaseFragment<SettingsFragmentBinding>() {
                 ),
                 SettingModel(
                     switch = null,
+                    title = getString(R.string.settings_item_cache),
+                    focus = {
+                        settingsSubtitle.text = getString(R.string.settings_subtitle_cache)
+                    },
+                    click = {
+                        viewModel.clearCache()
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.settings_clear_success),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                ),
+                SettingModel(
+                    switch = null,
                     title = getString(R.string.settings_item_logout),
                     focus = {
                         settingsSubtitle.text = ""
