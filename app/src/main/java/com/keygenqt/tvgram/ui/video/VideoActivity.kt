@@ -16,10 +16,7 @@
 package com.keygenqt.tvgram.ui.video
 
 import android.os.Bundle
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -44,6 +41,7 @@ class VideoActivity : FragmentActivity() {
 
         setContentView(R.layout.main_activity)
 
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         viewModel.downloadVideo(intent.getIntExtra("videoId", 0))
 
         supportFragmentManager.commit {
