@@ -47,6 +47,10 @@ class HomeViewModel @Inject constructor(
     private val repoCommon: CommonRepository,
 ) : ViewModel() {
 
+    private var isChatSecret: Boolean = preferences.isChatSecret
+    private var isChatPrivate: Boolean = preferences.isChatPrivate
+    private var isChatSupergroup: Boolean = preferences.isChatSupergroup
+
     /**
      * Response chat data
      */
@@ -66,6 +70,23 @@ class HomeViewModel @Inject constructor(
      * [StateFlow] for variable [_isError]
      */
     val isError: StateFlow<String?> get() = _isError.asStateFlow()
+
+    /**
+     * Check change pref
+     */
+    fun checkPrefChats(): Boolean {
+        return if (isChatSecret == preferences.isChatSecret
+            && isChatPrivate == preferences.isChatPrivate
+            && isChatSupergroup == preferences.isChatSupergroup
+        ) {
+            true
+        } else {
+            isChatSecret = preferences.isChatSecret
+            isChatPrivate = preferences.isChatPrivate
+            isChatSupergroup = preferences.isChatSupergroup
+            false
+        }
+    }
 
     /**
      * Get chats

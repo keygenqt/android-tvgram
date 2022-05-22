@@ -19,6 +19,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
@@ -36,7 +37,6 @@ import com.keygenqt.tvgram.utils.IntentHelper.getIntentVideoActivity
 import com.keygenqt.tvgram.utils.IntentHelper.getIntentVideoNoteActivity
 import dagger.hilt.android.AndroidEntryPoint
 import org.drinkless.td.libcore.telegram.TdApi
-import timber.log.Timber
 
 /**
  * Main page app Fragment
@@ -57,13 +57,15 @@ class HomeFragment : BrowseSupportFragment() {
         initUi()
         initListener()
         adapterListener()
-        setBackground()
         viewModel.updateChats()
     }
 
     override fun onResume() {
         super.onResume()
-        setBackground()
+        if (!viewModel.checkPrefChats()) {
+            viewModel.updateChats()
+        }
+        setBackground(if (viewModel.homeModels.value == null) R.drawable.bg_loading else R.drawable.bg)
     }
 
     private fun initUi() {
@@ -71,7 +73,7 @@ class HomeFragment : BrowseSupportFragment() {
             requireContext(),
             R.drawable.brand_loading
         )
-
+        setBackground(R.drawable.bg_loading)
         // over title
         headersState = HEADERS_ENABLED
         isHeadersTransitionOnBackEnabled = true
@@ -83,8 +85,8 @@ class HomeFragment : BrowseSupportFragment() {
         adapter = CardAdapter(this, R.layout.home_adapter_item)
     }
 
-    private fun setBackground() {
-        val bg = BitmapFactory.decodeResource(resources, R.drawable.bg)
+    private fun setBackground(@DrawableRes id: Int) {
+        val bg = BitmapFactory.decodeResource(resources, id)
         val h = bg.height - windowHeight * bg.width / windowWidth
         backgroundManager?.setBitmap(Bitmap.createBitmap(bg, 0, h, bg.width, bg.height - h))
     }
@@ -158,12 +160,6 @@ class HomeFragment : BrowseSupportFragment() {
         lifecycleScope.launchWhenStarted {
             viewModel.homeModels.collect { chats ->
 
-                // set state badge
-                badgeDrawable = AppCompatResources.getDrawable(
-                    requireContext(),
-                    if (chats == null) R.drawable.brand_loading else R.drawable.brand
-                )
-
                 adapter.toBaseAdapter()?.setItems(mutableListOf<ArrayAdapterGroup>().apply {
                     chats?.forEach { chat ->
                         add(
@@ -182,6 +178,14 @@ class HomeFragment : BrowseSupportFragment() {
                         ),
                     )
                 }
+
+                // set state badge
+                badgeDrawable = AppCompatResources.getDrawable(
+                    requireContext(),
+                    if (chats == null) R.drawable.brand_loading else R.drawable.brand
+                )
+
+                setBackground(if (chats == null) R.drawable.bg_loading else R.drawable.bg)
             }
         }
     }
